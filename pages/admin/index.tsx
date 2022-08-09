@@ -1,12 +1,13 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Header from '../components/Header'
+import Header from '../../layout/Header'
+import { Breadcrumb, Layout, Menu } from 'antd';
 
 const Admin: NextPage = () => {
   return (
-    <div>
+    <Layout style={{minHeight: '100vh',}}>
         <Header />
-    </div>
+    </Layout>
   )
 }
 
