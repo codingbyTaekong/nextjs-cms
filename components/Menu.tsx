@@ -27,9 +27,9 @@ const items = [
     //1 뎁스
   getItem("대시보드", "sub1", <BarChartOutlined />),
   // 2, 3뎁스
-  getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
-    getItem("Option 5", "5"),
-    getItem("Option 6", "6"),
+  getItem("공지사항", "sub2", <AppstoreOutlined />, [
+    getItem("목록", "5"),
+    getItem("글쓰기", "notice_board"),
     getItem("Submenu", "sub3", null, [
       getItem("Option 7", "7"),
       getItem("Option 8", "8"),
@@ -44,7 +44,11 @@ const items = [
 ];
 const rootSubmenuKeys = ["sub1", "sub2", "sub4"];
 
-function Nav() {
+interface HeaderProps {
+  onChange : (e : any) => void
+}
+
+function Nav({onChange} : HeaderProps) {
   const [openKeys, setOpenKeys] = useState(["sub1"]);
 
   const onOpenChange = (keys: string[]) => {
@@ -58,8 +62,9 @@ function Nav() {
       setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
     }
   };
-  const onClickMenu = (e: any) => {
-    console.log(e);
+  const onClickMenu = (e : any) => {
+    // console.log(e);
+    onChange(e);
     // e.keyPath를 통해 페이지 이동시켜야함
   };
   return (
