@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^12.2.5",
     "@types/styled-components": "^5.1.26",
     "antd": "^4.22.4",
     "boxicons": "^2.1.2",
@@ -17,7 +18,8 @@
     "react-dom": "18.2.0",
     "react-quill": "^2.0.0",
     "react-vh": "^1.1.1",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "styled-reset": "^4.4.2"
   },
   "devDependencies": {
     "@types/node": "18.6.3",

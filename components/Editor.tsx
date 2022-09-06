@@ -46,8 +46,16 @@ const formats = [
   "video",
 ];
 
+const styles = {
+  height : '500px',
+  width : '1024px',
+  margin : '0 auto',
+  marginTop : '8px'
+}
+
+
 const Editor = () => {
-  return <QuillNoSSRWrapper theme="snow" modules={modules} formats={formats} />;
+  return <QuillNoSSRWrapper style={styles} theme="snow" modules={modules} formats={formats} />;
 };
 
 export default Editor;

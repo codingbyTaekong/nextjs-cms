@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from 'antd';
 import Nav from "../components/Menu";
 import { Breadcrumb, Layout, Menu } from 'antd';
+import { CSSProperties } from "styled-components";
 const { Sider } = Layout;
 
 interface HeaderProps {
@@ -10,8 +11,12 @@ interface HeaderProps {
 }
 
 const Header = ({onChange} : HeaderProps) => {
+  const styles : CSSProperties  = {
+    backgroundColor : "#001529",
+    color : '#fff'
+  }
   return (
-    <Sider style={{backgroundColor : "#fff"}} width={260}>
+    <Sider style={styles} width={260}>
       <div>logo</div>
       <Nav onChange={onChange} />
     </Sider>

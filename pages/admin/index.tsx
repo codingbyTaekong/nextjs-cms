@@ -13,8 +13,15 @@ const Admin: NextPage = () => {
   const onChangeMenu = useCallback((e : any)=> {
     setPage(e.key);
   }, [])
+
+  const styles = {
+    height: 'calc(var(--vh, 1vh) * 100)',
+    backgroundColor : "#fff"
+  }
+
+
   return (
-    <Layout style={{minHeight: '100vh',}}>
+    <Layout style={styles}>
         <Header onChange={onChangeMenu} />
         {page === "notice_board" && <NoticeBoard />}
     </Layout>

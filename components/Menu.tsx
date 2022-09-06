@@ -6,6 +6,8 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
+import { CSSProperties } from "styled-components";
+
 
 function getItem(
   label: string,
@@ -67,14 +69,21 @@ function Nav({onChange} : HeaderProps) {
     onChange(e);
     // e.keyPath를 통해 페이지 이동시켜야함
   };
+
+  const styles : CSSProperties  = {
+    // backgroundColor : "#041C32",
+    // color : '#fff'
+  }
   return (
     <Menu
+      theme="dark"
       mode="inline"
       openKeys={openKeys}
       onOpenChange={onOpenChange}
       items={items}
       onClick={onClickMenu}
       className="menu----my"
+      style={styles}
     />
   );
 }
