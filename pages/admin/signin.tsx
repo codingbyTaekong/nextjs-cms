@@ -6,7 +6,7 @@ import { Breadcrumb, Layout, Menu } from 'antd';
 const Signin: NextPage = () => {
   return (
     <Layout style={{minHeight: '100vh',}}>
-        <Header />
+        {/* <Header /> */}
     </Layout>
   )
 }
