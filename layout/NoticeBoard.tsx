@@ -1,7 +1,7 @@
 import Input from "antd/lib/input/Input";
 import react, { useState, useMemo, useCallback, memo } from "react";
 import styled from "styled-components";
-import Editor from "../components/Editor";
+import Editor from "../components/Editor.jsx";
 
 const Container= styled.div`
   padding-top: 100px;
@@ -39,13 +39,24 @@ const TopContainer = styled.div`
   background-color: var(--bs-color-blue);
 `
 
+const Button = styled.button`
+  background-color: var(--bs-color-blue);
+  padding: 5px 12px;
+  color : #fff;
+`
+
 const NoticeBoard = () => {
+  const [contents, setContents] = useState('');
+  const onSubmitHandler = () => {
+    console.log(contents);
+  }
   return (
     <>
       <TopContainer></TopContainer>
       <Container>
         <Input style={{maxWidth : '1024px'}} placeholder="제목을 입력하세요" />
-        <Editor />
+        <Editor contents={contents} setContents={setContents}  />
+        <Button onClick={onSubmitHandler}>저장</Button>
       </Container>
     </>
   )
