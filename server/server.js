@@ -3,7 +3,10 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const multer  = require('multer')
 const cors = require('cors')
-
+const fs = require('fs');
+require('dotenv').config({
+  path : '.env'
+})
 
 const app = express();
 app.use(bodyParser.json({limit: '50mb'})); 
@@ -15,7 +18,16 @@ const upload = multer({
   storage: multer.diskStorage({
     // 저장할 장소
     destination(req, file, cb) {
-      cb(null, "public/uploads");
+      try {
+        console.log(req.body.id);
+        fs.accessSync(`public/uploads/${req.body.id}`);
+        cb(null, `public/uploads/${req.body.id}`);
+      } catch (error) {
+        console.log("폴더가 없으므로 생성합니다.");
+        fs.mkdirSync(`public/uploads/${req.body.id}`);
+        // cb(null, `public/uploads/${req.body.id}`);
+      }
+      cb(null, `public/uploads/${req.body.id}`);
     },
     // 저장할 이미지의 파일명
     filename(req, file, cb) {
@@ -29,16 +41,17 @@ const upload = multer({
   // limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한
 });
 
-app.post("/img", upload.single("img"), (req, res) => {
+app.post("/post/img", upload.single("img"), (req, res) => {
   // 해당 라우터가 정상적으로 작동하면 public/uploads에 이미지가 업로드된다.
   // 업로드된 이미지의 URL 경로를 프론트엔드로 반환한다.
   console.log("전달받은 파일", req.file);
   console.log("저장된 파일의 이름", req.file.filename);
 
   // 파일이 저장된 경로를 클라이언트에게 반환해준다.
-  const IMG_URL = `http://localhost:3001/uploads/${req.file.filename}`;
+  const IMG_URL = `${process.env.HOST_NAME}/uploads/${req.body.id}/${req.file.filename}`;
   console.log(IMG_URL);
   res.json({ url: IMG_URL });
 });
+
 
 app.listen(3001, () => console.log("연결"));

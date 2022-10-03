@@ -127,10 +127,11 @@ function Editor({ contents, setContents }) {
       const file = input.files[0];
       // multer에 맞는 형식으로 데이터 만들어준다.
       const formData = new FormData();
+      formData.append('id', 'testId');
       formData.append("img", file); // formData는 키-밸류 구조
       // 백엔드 multer라우터에 이미지를 보낸다.
       try {
-        const result = await axios.post("http://localhost:3001/img", formData);
+        const result = await axios.post("http://localhost:3001/post/img", formData);
         console.log("성공 시, 백엔드가 보내주는 데이터", result.data.url);
         const IMG_URL = result.data.url;
         // 이 URL을 img 태그의 src에 넣은 요소를 현재 에디터의 커서에 넣어주면 에디터 내에서 이미지가 나타난다
@@ -180,6 +181,14 @@ function Editor({ contents, setContents }) {
 
   return (
     <ReactQuill
+      style={{
+        height: "500px",
+        width: "1024px",
+        margin: "0 auto",
+        marginTop: "8px",
+        display: "flex",
+        flexDirection: "column",
+      }}
       forwardedRef={quillRef}
       placeholder="본문을 입력하세요..."
       modules={modules}
