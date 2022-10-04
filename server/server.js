@@ -4,15 +4,21 @@ const path = require("path");
 const multer  = require('multer')
 const cors = require('cors')
 const fs = require('fs');
+const router = require('./routes/api/auth/index')
+const cookieParser = require('cookie-parser');
+
 require('dotenv').config({
   path : '.env'
 })
 
 const app = express();
+// 미들웨어
 app.use(bodyParser.json({limit: '50mb'})); 
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(path.join(__dirname + "/public"))); // 정적 파일 위치 설정
 app.use(cors({ origin: "*" }));
+app.use(cookieParser())
+
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -52,6 +58,8 @@ app.post("/post/img", upload.single("img"), (req, res) => {
   console.log(IMG_URL);
   res.json({ url: IMG_URL });
 });
+
+app.use('/api', router);
 
 
 app.listen(3001, () => console.log("연결"));

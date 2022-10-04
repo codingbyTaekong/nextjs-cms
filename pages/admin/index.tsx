@@ -2,11 +2,13 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '../../layout/Header'
 import { Breadcrumb, Layout, Menu } from 'antd';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import NoticeBoard from '../../layout/NoticeBoard';
+import { getCookie } from '../../middleware/Cookie';
 
 const Admin: NextPage = () => {
   const [page, setPage] = useState('notice_board');
+  
   /**
    * Gnb 핸들러
    */
@@ -19,7 +21,9 @@ const Admin: NextPage = () => {
     backgroundColor : "#fff"
   }
 
-
+  useEffect(()=> {
+    const cookie = getCookie('refreshToken');
+  },[])
   return (
     <Layout style={styles}>
         <Header onChange={onChangeMenu} />
