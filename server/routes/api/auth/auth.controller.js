@@ -96,4 +96,25 @@ exports.login = (req, res) => {
   });
 };
 
+exports.check_id = (req, res) => {
+  const {
+    query: { id }
+  } = req;
+  const select_sql = `
+    select * from user_table where user_id = '${id}'
+  `;
+  conn.query(select_sql, async (err, rows) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({ callback: 500, err: err });
+    }
+    if (rows.length === 0) {
+      return res.send({ callback: 200, context: "사용가능한 아이디입니다." });
+    } else {
+      return res.send({ callback: 403, context: "이미 사용 중인 아이디입니다." });
+    }
+  })
+
+}
+
 // register 컨트롤러 추가해야함
