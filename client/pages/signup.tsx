@@ -2,10 +2,12 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Layout, Button, Checkbox, Form, Input } from "antd";
 import styled from "styled-components";
-import axios from "axios";
-import { env } from "process";
-import { useEffect } from "react";
-import Inko from 'inko'
+import axios from "../api/axios";
+import {useRouter} from 'next/router'
+// import axios from "axios";
+
+import {getCookie, setCookie} from "../middleware/Cookie";
+
 const Container = styled.div`
     width: 50%;
     height: 50%;
@@ -18,6 +20,9 @@ const Container = styled.div`
     justify-content: center;
     border-radius: 20px;
     box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+    & > form {
+        width: 80%;
+    }
     @media (max-width : 600px) {
         width: 95%;
         height: 80%;
@@ -25,9 +30,23 @@ const Container = styled.div`
 `;
 
 const Signup: NextPage = () => {
-    const inko = new Inko();
+  const router = useRouter();
+
   const onFinish = (values: any) => {
-    console.log("Success:", values);
+    axios.post(`/api/auth/register`, {
+        id : values.id,
+        nickname : values.nickname,
+        password : values.password
+    }).then(res=> {
+        if (res.data.callback === 200) {
+            console.log(res.data);
+            const {accessToken, refreshToken} = res.data.token;
+            axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+            router.push('/')
+        }
+    }).catch(err=> {
+        console.log(err)
+    })
   };
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -42,9 +61,7 @@ const Signup: NextPage = () => {
         return true
     }
   }
-  useEffect(()=> {
-    console.log(process.env.NEXT_PUBLIC_API_URL);
-  },[])
+
   const styles = {
     height: "calc(var(--vh, 1vh) * 100)",
     backgroundColor: "#fff",
@@ -60,7 +77,7 @@ const Signup: NextPage = () => {
             <Form
             name="basic"
             labelCol={{
-                span: 8,
+                span: 6,
             }}
             wrapperCol={{
                 span: 16,
@@ -86,7 +103,7 @@ const Signup: NextPage = () => {
                         try {
                             let flag = await validatorPattern(value);
                             if (flag) {
-                                let res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/check_id`, {params: {id : value}});
+                                let res = await axios.get(`/api/auth/check_id`, {params: {id : value}});
                                 if (res.data.callback === 200) {
                                     return Promise.resolve();
                                 } else if (res.data.callback === 403) {
@@ -138,7 +155,7 @@ const Signup: NextPage = () => {
                             /**
                              * 문자열에 특수문자 혹은 공백이 있는지 체크
                              */
-                            let res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/check_nickname`, {params: {id : value}});
+                            let res = await axios.get(`/api/auth/check_nickname`, {params: {nickname : value}});
                             if (res.data.callback === 200) {
                                 return Promise.resolve();
                             } else if (res.data.callback === 403) {
@@ -191,18 +208,18 @@ const Signup: NextPage = () => {
                 name="remember"
                 valuePropName="checked"
                 wrapperCol={{
-                offset: 8,
+                offset: 7,
                 span: 16,
                 }}
             >
                 <Checkbox>마케팅활용동의</Checkbox>
             </Form.Item>
-
             <Form.Item
                 wrapperCol={{
-                offset: 8,
+                offset: 7,
                 span: 16,
                 }}
+
             >
                 <Button type="primary" htmlType="submit">
                 회원가입

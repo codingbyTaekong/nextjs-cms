@@ -4,20 +4,11 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 module.exports = withBundleAnalyzer({
   
 
-  target: "serverless",
+  // target: "serverless",
   env: {
     BASE_URL: process.env.BASE_URL,
   },
-  async rewrites() {
-    console.log(process.env.SOURCE_PATH)
-    console.log(process.env.DESTINATION_URL)
-    return [
-      {
-          source: process.env.SOURCE_PATH,
-          destination: process.env.DESTINATION_URL,
-      },
-    ]
-  },
+
   webpack(conf) {
     conf.module.rules.push({
       test: /\.svg$/,
@@ -44,5 +35,13 @@ module.exports = withBundleAnalyzer({
     // 절대경로
     conf.resolve.modules.push(__dirname);
     return conf;
+  },
+  async rewrites() {
+    return [
+      {
+          source: '/:path*',
+          destination: 'http://localhost:3001/:path*',
+      },
+    ]
   },
 });

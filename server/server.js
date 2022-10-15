@@ -16,7 +16,11 @@ const app = express();
 app.use(bodyParser.json({limit: '50mb'})); 
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(path.join(__dirname + "/public"))); // 정적 파일 위치 설정
-app.use(cors({ origin: "*" }));
+app.use(cors({ 
+  origin: "http://localhost:3000",
+  credentials:true,
+  optionSuccessStatus:200
+}));
 app.use(cookieParser())
 
 
@@ -60,6 +64,5 @@ app.post("/post/img", upload.single("img"), (req, res) => {
 });
 
 app.use('/api', router);
-
 
 app.listen(3001, () => console.log("연결"));
