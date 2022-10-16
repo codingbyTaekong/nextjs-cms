@@ -84,9 +84,7 @@ exports.refreshTokenMiddleware = (req, res, next) => {
     
         // process the promise
         p.then((decoded)=>{
-            console.log(decoded);
-            req.decoded = decoded
-            next()
+            next(decoded)
         }).catch(onError)
     })
 
