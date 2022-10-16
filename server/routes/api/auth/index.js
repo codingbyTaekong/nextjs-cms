@@ -6,5 +6,5 @@ router.post('/auth/login', controller.login);
 router.get('/auth/check_id', controller.check_id);
 router.get('/auth/check_nickname', controller.check_nickname);
 router.post('/auth/register', controller.register);
-router.get('/test', controller.test);
+router.post('/auth/token', controller.refreshToken);
 module.exports = router

@@ -2,11 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db_config = require("../../../db_config");
 const dayjs = require("dayjs");
-const authMiddleware = require("../../../middleware/auth");
+const {accessTokenMiddleware , refreshTokenMiddleware} = require("../../../middleware/auth");
 const conn = db_config.init();
 
 exports.login = (req, res) => {
-  authMiddleware(req, res, ()=> {
+  accessTokenMiddleware(req, res, ()=> {
     console.log("완료")
     res.send("oh")
   })
@@ -151,7 +151,6 @@ exports.register = async (req, res) => {
     const salt = bcrypt.genSaltSync(saltRounds);
     const hashedPassword = bcrypt.hashSync(password, salt);
     const hashedTokenKey = bcrypt.hashSync(`${id+password}_bigchoi`, salt);
-    console.log(process.env.JWT_SECRET)
     const refreshToken = jwt.sign({}, process.env.JWT_SECRET, {
       expiresIn: "14d",
       issuer: "bigchoi",
@@ -205,7 +204,8 @@ exports.register = async (req, res) => {
 }
 
 
-exports.test = (req, res) => {
-  console.log(req.headers);
-  res.send("ok")
+exports.refreshToken = (req, res) => {
+  refreshTokenMiddleware(req, res, ()=> {
+    console.log("ok")
+  })
 }
