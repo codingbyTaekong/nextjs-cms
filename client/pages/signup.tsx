@@ -33,7 +33,7 @@ const Signup: NextPage = () => {
   const router = useRouter();
 
   const onFinish = (values: any) => {
-    axios.post(`/api/auth/register`, {
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
         id : values.id,
         nickname : values.nickname,
         password : values.password
@@ -103,7 +103,7 @@ const Signup: NextPage = () => {
                         try {
                             let flag = await validatorPattern(value);
                             if (flag) {
-                                let res = await axios.get(`/api/auth/check_id`, {params: {id : value}});
+                                let res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/check_id`, {params: {id : value}});
                                 if (res.data.callback === 200) {
                                     return Promise.resolve();
                                 } else if (res.data.callback === 403) {
@@ -155,7 +155,7 @@ const Signup: NextPage = () => {
                             /**
                              * 문자열에 특수문자 혹은 공백이 있는지 체크
                              */
-                            let res = await axios.get(`/api/auth/check_nickname`, {params: {nickname : value}});
+                            let res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/check_nickname`, {params: {nickname : value}});
                             if (res.data.callback === 200) {
                                 return Promise.resolve();
                             } else if (res.data.callback === 403) {
@@ -231,5 +231,8 @@ const Signup: NextPage = () => {
     </>
   );
 };
+
+
+
 
 export default Signup;

@@ -14,7 +14,6 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: lightblue;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

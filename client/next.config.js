@@ -8,7 +8,6 @@ module.exports = withBundleAnalyzer({
   env: {
     BASE_URL: process.env.BASE_URL,
   },
-
   webpack(conf) {
     conf.module.rules.push({
       test: /\.svg$/,
@@ -36,12 +35,12 @@ module.exports = withBundleAnalyzer({
     conf.resolve.modules.push(__dirname);
     return conf;
   },
-  async rewrites() {
-    return [
-      {
-          source: '/:path*',
-          destination: 'http://localhost:3001/:path*',
-      },
-    ]
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //         source: '/api/:path*',
+  //         destination: 'http://localhost:3001/api/:path*',
+  //     },
+  //   ]
+  // },
 });

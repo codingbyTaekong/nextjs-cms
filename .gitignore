@@ -5,7 +5,8 @@ node_modules/
 uploads/
 /.pnp
 .pnp.js
-
+livepano/
+panos/
 # testing
 /coverage
 

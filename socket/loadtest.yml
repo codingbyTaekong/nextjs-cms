@@ -1,0 +1,37 @@
+config:
+  target: "http://localhost:5000"
+  phase:
+    - duration: 1
+      arrivalRate : 2
+scenarios:
+  - name : "socketTest"
+    engine: socketio
+    flow:
+      - emit:
+          channel: "ENTER_USER"
+          data:
+            "device": "pc"
+            "campus": "duri"
+            "userInfo":
+              "nickname": "최태호"
+              "position":
+                "x": "0"
+                "y": "0"
+                "z": "0"
+              "rotation":
+                "x": "0"
+                "y": "0"
+                "z": "0"
+              "items":
+                "hair": "2"
+                "cloth": "3"
+                "shoes": '3'
+      - loop:
+        - emit: 
+            channel: "MOVE_POZ"
+            data:
+              "poz":
+                "x": "45"
+                "y": "0"
+                "z": "-45"
+      # - think: 70

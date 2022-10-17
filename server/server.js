@@ -5,6 +5,7 @@ const multer  = require('multer')
 const cors = require('cors')
 const fs = require('fs');
 const router = require('./routes/api/auth/index')
+const tour_router = require('./routes/tour/index')
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config({
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(path.join(__dirname + "/public"))); // 정적 파일 위치 설정
 app.use(cors({ 
   origin: "http://localhost:3000",
-  credentials:true,
+  credentials:true,  
   optionSuccessStatus:200
 }));
 app.use(cookieParser())
@@ -64,5 +65,6 @@ app.post("/post/img", upload.single("img"), (req, res) => {
 });
 
 app.use('/api', router);
+app.use('/tour', tour_router)
 
 app.listen(3001, () => console.log("연결"));

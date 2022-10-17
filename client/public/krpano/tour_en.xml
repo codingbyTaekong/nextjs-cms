@@ -1,0 +1,655 @@
+﻿<krpano version="1.20.11" title="Personal Protective Equipment">
+
+	<include url="%CURRENTXML%/skin/vtourskin.xml" />
+	<include url="%CURRENTXML%/plugins/followmouse.xml" />
+	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
+	<skin_settings maps="false"
+	               maps_type="google"
+	               maps_bing_api_key=""
+	               maps_google_api_key=""
+	               maps_zoombuttons="false"
+	               maps_loadonfirstuse="true"
+	               gyro="true"
+	               gyro_keeplookingdirection="false"
+	               webvr="true"
+	               webvr_keeplookingdirection="true"
+	               webvr_prev_next_hotspots="true"
+	               autotour="false"
+	               littleplanetintro="false"
+	               followmousecontrol="false"
+	               title="true"
+	               thumbs="true"
+	               thumbs_width="180" thumbs_height="80" thumbs_padding="10" thumbs_crop="20|100|360|180"
+				   
+	               thumbs_opened="true"
+	               thumbs_text="true"
+	               thumbs_dragging="true"
+	               thumbs_onhoverscrolling="false"
+	               thumbs_scrollbuttons="false"
+	               thumbs_scrollindicator="false"
+	               thumbs_loop="false"
+	               tooltips_buttons="false"
+	               tooltips_thumbs="false"
+	               tooltips_hotspots="false"
+	               tooltips_mapspots="false"
+	               deeplinking="false"
+	               loadscene_flags="MERGE"
+	               loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)"
+	               loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)"
+	               loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)"
+	               loadingtext=""
+	               layout_width="100%"
+	               layout_maxwidth="814"
+	               controlbar_width="-24"
+	               controlbar_height="40"
+	               controlbar_offset="20"
+	               controlbar_offset_closed="-40"
+	               controlbar_overlap.no-fractionalscaling="10"
+	               controlbar_overlap.fractionalscaling="0"
+	               design_skin_images="vtourskin.png"
+	               design_bgcolor="0x2D3E50"
+	               design_bgalpha="0.8"
+	               design_bgborder="0"
+	               design_bgroundedge="1"
+	               design_bgshadow="0 4 10 0x000000 0.3"
+	               design_thumbborder_bgborder="3 0xFFFFFF 1.0"
+	               design_thumbborder_padding="2"
+	               design_thumbborder_bgroundedge="0"
+	               design_text_css="color:#000; font-family:Arial; font-size: 20px;"
+	               design_text_shadow="1"
+	               />
+
+	<!--
+	    For an alternative skin design either change the <skin_settings> values 
+	    from above or optionally include one of the predefined designs from below.
+	-->
+	<!-- <include url="skin/vtourskin_design_flat_light.xml"  /> -->
+	<!-- <include url="skin/vtourskin_design_glass.xml"       /> -->
+	<!-- <include url="skin/vtourskin_design_ultra_light.xml" /> -->
+	<!-- <include url="skin/vtourskin_design_117.xml"         /> -->
+	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
+	<include url="%CURRENTXML%/skin/vtourskin_design_black.xml"       />
+
+
+	
+	<!-- <scene name="scene_teatfhtgiteltfvtgrteatfvtgr01" title="강원권01" onstart="" thumburl="panos/teatfhtgiteltfvtgrteatfvtgr01.tiles/thumb.jpg" lat="" lng="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/teatfhtgiteltfvtgrteatfvtgr01.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/teatfhtgiteltfvtgrteatfvtgr01.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048,3840" />
+		</image>
+
+	</scene> -->
+
+	<scene name="scene_p1" title="01" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p1.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p1.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p1.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p1.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="arrow_1" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-0.093824509735839" atv="10.63468769081355"
+			scale="0.5"
+			onhover="showtext('02');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="3"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p2',get(skin_settings.loadscene_blend))"
+		/>
+	</scene>
+
+	<scene name="scene_p2" title="02" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p2.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p2.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p2.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p2.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="hotspot_2" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="1.5302265180270638" atv="13.619361866888326"
+			scale="0.5"
+			onhover="showtext('Rules for wearing personal protective equlpment');"
+			onout="showtext_hide();"
+			onclick="js(actionPopup(url, https://www.pictgame.com/rules));"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="arrow_2" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-14.608271564251595" atv="11.689729641476807"
+			scale="0.5"
+			onhover="showtext('03');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="3"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p3',get(skin_settings.loadscene_blend))"
+		/>
+		<hotspot name="arrow_3" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="13.06738076364104" atv="25.747774108848777"
+			scale="0.5"
+			onhover="showtext('01');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-182"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="skin_loadscene('scene_p2',get(skin_settings.loadscene_blend))" -->
+	</scene>
+
+
+	<scene name="scene_p3" title="03" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p3.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p3.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p3.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p3.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="hotspot_3" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="33.516506413601746" atv="20.813681368867922"
+			scale="0.5"
+			onhover="showtext('Work with open-type equlpment');"
+			onout="showtext_hide();"
+			onclick="js(actionPopup(url, https://www.pictgame.com/equipment2));"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+
+		<hotspot name="hotspot_10" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="0" atv="0"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onout="showtext_hide();"
+			onclick="js(actionPopup(url, https://www.pictgame.com/equipment, size));"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="60"
+			height="60"
+			alpha="0"
+		/>
+		<hotspot name="arrow_4" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-27.696432344022753" atv="13.329036345397348"
+			scale="0.5"
+			onhover="showtext('05');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-40"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p5',get(skin_settings.loadscene_blend));"
+		/>
+			<!-- ondown="draghotspot();" -->
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+		<hotspot name="arrow_5" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-11.644202264905914" atv="7.131344553167405"
+			scale="0.5"
+			onhover="showtext('04');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="3"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p4',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+		<hotspot name="arrow_6" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="46.26477352907517" atv="13.704908304062508"
+			scale="0.5"
+			onhover="showtext('06');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="40"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p6',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+		<hotspot name="arrow_7" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-13.961412421544765" atv="32.75200793283028"
+			scale="0.5"
+			onhover="showtext('02');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-174"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+	</scene>
+
+	<scene name="scene_p4" title="04" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p4.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p4.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p4.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p4.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="video" 
+			url.html5="%CURRENTXML%/plugins/videoplayer.js"
+			videourl="%CURRENTXML%/livepano/en/1.mp4"
+			distorted="true"
+			capture="true"
+			ath="-4.555154458250286" atv="-0.49888385375065974"
+			scale="0.32"
+			onhover="showtext('View More');"
+			onclick="js(actionPopup(video, https://player.vimeo.com/video/496808451, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="5"
+			rz="0.1"
+			edge="center"			
+		/>
+		<hotspot name="arrow_8" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-3.656803779640029" atv="32.91454471017862"
+			scale="0.5"
+			onhover="showtext('03');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-174"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p3',get(skin_settings.loadscene_blend));"
+		/>
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+		<hotspot name="arrow_9" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="10.584259947243652" atv="26.32141837584021"
+			scale="0.5"
+			onhover="showtext('06');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="3"
+			rz="87"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p6',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+		<hotspot name="arrow_10" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-17.006051934775712" atv="26.162918479771168"
+			scale="0.5"
+			onhover="showtext('05');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="3"
+			rz="-87"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p5',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+			<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+	</scene>
+
+	<scene name="scene_p5" title="05" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p5.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p5.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p5.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p5.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="hotspot_4" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-59.105665519012575" atv="19.522370445570957"
+			scale="0.5"
+			onhover="showtext('Maintenance work');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/maintenancework));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_5" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-24.989523331781072" atv="17.21063687210154"
+			scale="0.5"
+			onhover="showtext('Loading/ unloading and raw meterial transfer');"
+			onout="showtext_hide();"
+			onclick="js(actionPopup(url, https://www.pictgame.com/loading));"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_6" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="60.88253051363341" atv="19.426546240212126"
+			scale="0.5"
+			onhover="showtext('Work with closed-type equlpment');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/typeequipment2));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<!-- 왼쪽 -->
+		<hotspot name="hotspot_11" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-88.97002124922875" atv="-3.2007446986137285"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/maintenancework2, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<!-- 중앙 -->
+		<hotspot name="hotspot_12" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="1.0894007147175557" atv="-1.7347164760611755"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/loading2, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<!-- 오른쪽 -->
+		<hotspot name="hotspot_13" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="90.84829577253214" atv="-2.69688135033078"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/typeequipment, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="arrow_11" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-13.961412421544765" atv="32.75200793283028"
+			scale="0.5"
+			onhover="showtext('03');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-174"
+			width="250"
+			height="250"
+			ondown="skin_loadscene('scene_p3',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+		<hotspot name="arrow_12" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="10.584259947243652" atv="26.32141837584021"
+			scale="0.5"
+			onhover="showtext('04');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="3"
+			rz="87"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p4',get(skin_settings.loadscene_blend))"
+		/>
+		<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+	</scene>
+
+	<scene name="scene_p6" title="06" onstart="" havevrimage="true" bestpreview="true" thumburl="%CURRENTXML%/panos/en/p6.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="1.0" vlookat="0.0" fovtype="MFOV" fov="100" fovmin="57.15527891574968" fovmax="120" limitview="auto" />
+		<preview url="%CURRENTXML%/panos/en/p6.tiles/preview.jpg" />
+
+		<image if="!webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p6.tiles/pano_%s.jpg" />
+		</image>
+
+		<image if="webvr.isenabled">
+			<cube url="%CURRENTXML%/panos/en/p6.tiles/vr/pano_%s.jpg" />
+		</image>
+		<hotspot name="hotspot_7" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-59.105665519012575" atv="19.522370445570957"
+			scale="0.5"
+			onhover="showtext('Other work');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/otherwork));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_8" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="26.580888006074645" atv="16.78007855791306"
+			scale="0.5"
+			onhover="showtext('Testing work');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/testingwork));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_9" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="60.88253051363341" atv="19.426546240212126"
+			scale="0.5"
+			onhover="showtext('Leakage and waste treatment work');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/leakageandwaste));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+
+		<hotspot name="hotspot_14" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-90.54442683094987" atv="-3.401211709471801"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/otherwork2, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_15" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="1.1318892865609769" atv="-2.7507658528443466"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/testingwork2, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="hotspot_16" 
+			url=".%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="89.72323631029622" atv="-2.9219195652365473"
+			scale="0.5"
+			onhover="showtext('3D MODEL');"
+			onclick="js(actionPopup(url, https://www.pictgame.com/maintenancework3, size));"
+			onout="showtext_hide();"
+			rx="0"
+			ry="0"
+			rz="50"
+			width="100"
+			height="100"
+			alpha="0"
+		/>
+		<hotspot name="arrow_13" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="-14.773763671914367" atv="18.823959982576717"
+			scale="0.5"
+			onhover="showtext('04');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="3"
+			rz="-87"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p4',get(skin_settings.loadscene_blend))"
+		/>
+		<hotspot name="arrow_14" 
+			url="%CURRENTXML%/poitopano_float_up.png" 
+			distorted="true"
+			capture="true"
+			ath="10.584259947243652" atv="26.32141837584021"
+			scale="0.5"
+			onhover="showtext('03');"
+			onout="showtext_hide();"
+			rx="-22"
+			ry="10"
+			rz="-174"
+			width="250"
+			height="250"
+			onclick="skin_loadscene('scene_p3',get(skin_settings.loadscene_blend))"
+		/>
+			<!-- ondown="draghotspot();" -->
+		<!-- ondown="skin_loadscene('scene_p1',get(skin_settings.loadscene_blend))" -->
+	</scene>
+</krpano>
