@@ -1,7 +1,51 @@
 .nav {
-    padding: 25px 0 25px 25px;
+    padding: 0;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    background-color: #fff;
+}
+.nav > ul {
+    height: 80px;
+    width: 100%;
+    max-width: 1070px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.nav > ul > li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .title {
-    font-family: var(--fn-gothic);
+    position: absolute;
+    /* font-family: var(--fn-gothic); */
+    font-family: var(--fn-jua);
     font-size: 28px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.title a {
+    color : #000;
+}
+
+
+.loginButton {
+    
+    margin-left: auto;
+}
+.loginButton > a {
+    color : #242424;
+    font-size: 16px;
+    font-family: var(--fn-jua);
+}
+
+/* 최근 추가된 클라이밍장 */
+.recentClimbGymListContainer {
+    width : 100%;
 }

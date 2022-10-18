@@ -1,0 +1,77 @@
+.main {
+    width: 100%;
+}
+
+.visualSectionContainer {
+    width: 100%;
+    padding-top: 15vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.visualTitle {
+    font-size: 32px;
+    font-family: var(--fn-gothic);
+    display : flex;
+    align-items: flex-end;
+}
+
+.visualTitle > b {
+    font-size: 40px;
+    font-family: var(--fn-jua);
+    line-height : 0.92;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 22px;
+    width: 90%;
+    max-width: 470px;
+    position: relative;
+}
+
+.searchContainer > input {
+    width: 100%;
+    height: 55px;
+    border-radius: 12px;
+    border: 1px solid #242424;
+    outline: none;
+    font-size: 16px;
+    padding-left: 12px;
+    padding-right: 45px;
+    font-family: var(--fn-gothic);
+}
+.searchContainer > input:hover {
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+.searchContainer > button {
+    width: 55px;
+    height: calc(100% - 4px);
+    position: absolute;
+    z-index: 1;
+    right: 1px;
+    top: 50%;
+    transform : translateY(-50%);
+    border: 0;
+    background-color: unset;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius : 0 10px 10px 0;
+}
+
+
+/* 최근 추가된 클라이밍장 */
+.recentClimbGymListContainer {
+    padding-top : 15vh;
+    width : 100%;
+    max-width: 1070px;
+    margin : 0 auto;
+}
+
+.recentClimbGymListContainer > h1 {
+    font-family: var(--fn-sans);
+    font-weight : 900;
+    font-size: 22px;
+}
