@@ -1,0 +1,7 @@
+.nav {
+    padding: 25px 0 25px 25px;
+}
+.title {
+    font-family: var(--fn-gothic);
+    font-size: 28px;
+}

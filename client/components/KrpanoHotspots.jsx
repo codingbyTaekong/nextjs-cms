@@ -43,8 +43,11 @@ function KrpanoHotspots() {
 
   useEffect(()=> {
     if (loadScene) {
+      console.log(_krapno.getKrpano('scene["scene_p1"]'));
       const hotspot = _krapno.getKrpano('hotspot["arrow_1"]');
-      console.log(hotspot)
+      _krapno.setKrpano('scene["scene_p2"].onstart', ()=> {
+        console.log("시작")
+      })
     }
   }, [loadScene])
   return (
