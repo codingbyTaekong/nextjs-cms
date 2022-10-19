@@ -75,3 +75,106 @@
     font-weight : 900;
     font-size: 22px;
 }
+
+.recentClimbGymList {
+    display: flex;
+    margin-top: 54px;
+    overflow-x: scroll;
+    padding-bottom: 12px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.recentClimbGymList:hover::-webkit-scrollbar {
+    opacity: 1;
+}
+.recentClimbGymList::-webkit-scrollbar {
+    opacity: 0;
+}
+.recentCard {
+    flex-basis: 280px;
+    flex-shrink: 0;
+    width: 270px;
+    height: 260px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 35px 25px;
+    cursor: pointer;
+}
+
+.recentCard:not(:last-of-type) {
+    margin-right: 18px;
+}
+
+.recentCard:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.recentCard > h1 {
+    font-family: var(--fn-jua);
+    font-size: 20px;
+}
+.recentCard:hover > h1 {
+    color : #098db4;
+}
+
+.recentCard > p {
+    font-size: 16px;
+    font-family: var(--fn-gothic);
+    letter-spacing: -0.96px;
+    padding-top: 6px;
+    color : rgba(0,0,0,0.5);
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
+.reviewContainer {
+
+}
+
+.reviewContainer > h2 {
+    font-size: 15px;
+    font-family: var(--fn-jua);
+    padding-top: 15%;
+}
+
+.reviewContainer > ul {
+    width: 100%;
+    padding-top: 8px;
+}
+
+.reviewContainer > ul > li {
+    font-family: var(--fn-sans);
+    font-size: 14px;
+    overflow: hidden;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.35;
+}
+
+.rateContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.rateContainer > p {
+    font-family: var(--fn-sans);
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.rateContainer > p .totalRate {
+    /* color :  */
+}
+
+.rateContainer > p > .maxRate {
+    color: rgba(0,0,0,0.3);
+    font-size: 13px;
+}

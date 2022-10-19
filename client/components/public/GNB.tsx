@@ -8,13 +8,13 @@ function GNB() {
         <ul>
             <li>
                 <h1 className={styles.title}>
-                  <Link href="/">
-                    클라이맥스
+                  <Link title="로고" href="/">
+                    로고
                   </Link>
                 </h1>
             </li>
               <li className={styles.loginButton}>
-                <Link href="/signin">로그인</Link>
+                <Link title='로그인' href="/signin">로그인</Link>
               </li>
         </ul>
       </nav>
