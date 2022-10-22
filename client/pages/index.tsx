@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Rate } from 'antd';
+import { GetServerSideProps } from 'next'
+import axios from '../api/axios';
+
 const Home : NextPage = () => {
     const [isDrag, setIsDrag] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -51,18 +54,19 @@ const Home : NextPage = () => {
             <GNB></GNB>
             <main className={styles.main}>
                 <section className={styles.visualSectionContainer}>
-                    {/* <h1 className={styles.visualTitle}>Climber를 위한 공간.&nbsp;&nbsp;<b>클라이맥스</b></h1> */}
-                    <h1 className={styles.visualTitle}>Tourlist를 위한 공간.&nbsp;&nbsp;<b>가상전시관</b></h1>
+                    <h1 className={styles.visualTitle}>Climber를 위한 공간.&nbsp;&nbsp;<b>클라이맥스</b></h1>
+                    {/* <h1 className={styles.visualTitle}>Tourlist를 위한 공간.&nbsp;&nbsp;<b>가상전시관</b></h1> */}
                     <div className={styles.searchContainer}>
-                        {/* <input type="text" name="" placeholder='클라이밍장을 검색해보세요'/> */}
-                        <input type="text" name="" placeholder='전시관을 검색해보세요'/>
+                        <input type="text" name="" placeholder='클라이밍장을 검색해보세요'/>
+                        {/* <input type="text" name="" placeholder='전시관을 검색해보세요'/> */}
                         <button>
                             <FontAwesomeIcon icon={faSearch} />
                         </button>
                     </div>
                 </section>
                 <section className={styles.recentClimbGymListContainer}>
-                    <h1>최근 뜨고 있는 전시관</h1>
+                    {/* <h1>최근 뜨고 있는 전시관</h1> */}
+                    <h1>최근 뜨고 있는 클라이밍장</h1>
                     <ul className={styles.recentClimbGymList} ref={recentContainerRef} onMouseDown={mouseDonwScrollHandler} onMouseMove={mouseMoveScrollHandler} onMouseUp={mouseUpScrollHandler} onMouseLeave={mouseUpScrollHandler}>
                         <li  className={styles.recentCard} onClick={clickCarkHandler}>
                             <h1>국립중앙박물관</h1>
@@ -108,5 +112,9 @@ const Home : NextPage = () => {
 
     )
 }
+
+// export const getServerSideProps : GetServerSideProps = async (context) => {
+//     const recentReviewGyms = await axios.get(``)
+// }
 
 export default Home

@@ -23,3 +23,115 @@
   font-weight: 500;
   font-size: 18px;
 }
+
+
+
+.kakaoOverlayContainer {
+  width: 200px;
+  /* height: 222px; */
+  border-radius: 10px 0 10px 10px;
+}
+
+.kakaoOverlayContainer .overlayTail {
+  position: absolute;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%) rotate(45deg);
+  background-color: #fff;
+  /* box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.16); */
+}
+.kakaoOverlayContainer .overlayBox {
+  padding: 13px 16px;
+  width: 100%;
+  border-radius: 10px 0 10px 10px;
+  /* height: 210px; */
+  background-color: #fff;
+  box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.16);
+  position: relative;
+}
+
+.kakaoOverlayContainer .overlayBox > h3 {
+  font-family: var(--fn-default);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -1.26px;
+  color: #333;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.kakaoOverlayContainer .overlayBox > p {
+  color: #b2b2b2;
+  letter-spacing: -0.91px;
+  font-size: 13px;
+  font-weight: 400;
+  font-family: var(--fn-default);
+  margin-bottom: 10px;
+  text-align: center;
+  white-space: np-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.kakaoOverlayContainer .overlayBox > .viewGymInfo {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px #dfdfdf;
+  background-color: unset;
+  font-family: var(--fn-sans);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -1.12px;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.kakaoOverlayContainer .overlayBox > .viewGymInfo:hover {
+  background-color: #00b5ff;
+  color: #fff;
+}
+
+.kakaoOverlayContainer .overlayBox > .viewGymInner {
+  width: 100%;
+  height: 44px;
+  font-family: var(--fn-sans);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -1.12px;
+  background-color: var(--bs-color-red);
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width:600px) {
+  .kakaoOverlayContainer {
+      width: 200px;
+      height: 158px;
+  }
+  .kakaoOverlayContainer .overlayBox {
+      height: 100%;
+  }
+  .kakaoOverlayContainer .overlayBox > h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+  }
+  .kakaoOverlayContainer .overlayBox > p {
+      font-size: 12px;
+      margin-bottom: 12px;
+  }
+  .kakaoOverlayContainer .overlayBox > .viewCafeInfo, .kakaoOverlayContainer .overlayBox > .viewCafeInner {
+      width: 100%;
+      height: 32px;
+      font-size: 14px;
+  }
+}

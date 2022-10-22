@@ -6,6 +6,7 @@ const cors = require('cors')
 const fs = require('fs');
 const router = require('./routes/api/auth/index')
 const tour_router = require('./routes/tour/index')
+const gym_router = require('./routes/gym/index')
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config({
@@ -65,6 +66,7 @@ app.post("/post/img", upload.single("img"), (req, res) => {
 });
 
 app.use('/api', router);
-app.use('/tour', tour_router)
+app.use('/tour', tour_router);
+app.use('/gym', gym_router);
 
 app.listen(3001, () => console.log("연결"));
