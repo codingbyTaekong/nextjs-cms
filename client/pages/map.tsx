@@ -69,13 +69,7 @@ interface gymData {
     gym_address : string
     gym_latitude : string
     gym_longitude : string
-    gym_stretchingZone : number
-    gym_fittingRoom : number
-    gym_locker : number
-    gym_fitnessZone : number
-    gym_restZoon : number
-    gym_washingZoon : number
-    gym_showerRoom: number
+    gym_info : string
     created_at : string
     updated_at : string
 }
@@ -328,36 +322,36 @@ const Map: NextPage = () => {
                 const map = new window.kakao.maps.Map(container, options);
                 myMap.current = map;
                 window.myMap = map;
-                getData();
+                // getData();
 
 
 
-                // const geocoder = new window.kakao.maps.services.Geocoder();
-                // geocoder.addressSearch('경기 남양주시 다산 중앙로 19번 길 15 4층', function(result : any, status : any) {
+                const geocoder = new window.kakao.maps.services.Geocoder();
+                geocoder.addressSearch('서울특별시 강서구 염창동 262-1', function(result : any, status : any) {
 
-                //     // 정상적으로 검색이 완료됐으면 
-                //      if (status === window.kakao.maps.services.Status.OK) {
+                    // 정상적으로 검색이 완료됐으면 
+                     if (status === window.kakao.maps.services.Status.OK) {
                 
-                //         var coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-                //         const lat = result[0].y
-                //         const lng = result[0].x
-                //         console.log("lat : ", lat, "lng : ", lng);
-                //         // 결과값으로 받은 위치를 마커로 표시합니다
-                //         var marker = new window.kakao.maps.Marker({
-                //             map: map,
-                //             position: coords
-                //         });
+                        var coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+                        const lat = result[0].y
+                        const lng = result[0].x
+                        console.log("lat : ", lat, "lng : ", lng);
+                        // 결과값으로 받은 위치를 마커로 표시합니다
+                        var marker = new window.kakao.maps.Marker({
+                            map: map,
+                            position: coords
+                        });
                 
-                //         // 인포윈도우로 장소에 대한 설명을 표시합니다
-                //         var infowindow = new window.kakao.maps.InfoWindow({
-                //             content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
-                //         });
-                //         infowindow.open(map, marker);
+                        // 인포윈도우로 장소에 대한 설명을 표시합니다
+                        var infowindow = new window.kakao.maps.InfoWindow({
+                            content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
+                        });
+                        infowindow.open(map, marker);
                 
-                //         // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-                //         map.setCenter(coords);
-                //     } 
-                // });  
+                        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+                        map.setCenter(coords);
+                    } 
+                });  
             });
         };
         mapScript.addEventListener("load", onLoadKakaoMap);

@@ -21,24 +21,89 @@ exports.getGymData = (req, res) => {
     })
 }
 
-exports.recentReviewGyms = (req, res) => {
+exports.recentReviewGyms = async (req, res) => {
   // console.log("???")
   // select idx, gym_id, review_text, AVG(review_rate) as avg_reate,  Max(created_at) as recented_at from review_table group by gym_id order by recented_at DESC limit 5
   const select_sql = `
-    select * from (select idx, gym_id, review_text, AVG(review_rate) as avg_reate,  Max(created_at) as recented_at from review_table group by gym_id) r order by recented_at DESC
+    select * from (select idx, gym_id, AVG(review_rate) as avg_reate,  Max(created_at) as recented_at from review_table group by gym_id) r order by recented_at DESC limit 5
   `
-  conn.query(select_sql, async (err, rows) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ callback: 500, err: err });
-    }
-    console.log(rows);
-    if (rows.length !== 0) {
-      return res.send({ callback: 200, context: rows});
-    } else {
-      return res.send({ callback: 403, context: "존재하지 않는 투어입니다." });
-    }
-})
+
+  try {
+    
+    const [recents_reviews_rows] = await conn.promise().query(select_sql);
+    let select_gym_sql = `
+      select * from gym_table
+    `
+    let selcet_review_sql = `
+      select * from review_table
+    `
+    recents_reviews_rows.map((obj,index) => {
+      if (index === 0) {
+        select_gym_sql += `where idx = ${obj.gym_id}`
+        selcet_review_sql += `where gym_id = ${obj.idx}`
+      } else if (index === recents_reviews_rows.length -1) {
+        select_gym_sql += ` or ${obj.gym_id}`
+        selcet_review_sql += ` or ${obj.idx} order by created_at DESC`
+      } else {
+        select_gym_sql += ` or ${obj.gym_id}`
+        selcet_review_sql += ` or ${obj.idx}`
+      }
+    })
+    console.log(selcet_review_sql);
+    const [gym_rows] = await conn.promise().query(select_gym_sql);
+    const [review_rows] = await conn.promise().query(selcet_review_sql);
+    recents_reviews_rows.map((obj,index) => {
+      gym_rows[index].average_rate = Number(obj.avg_reate).toFixed(1);
+    })
+
+    review_rows.map((review, index) => {
+      const gym_id = review.gym_id;
+      gym_rows.map(gym => {
+        if (gym.idx === gym_id) {
+          if (!gym.reviews) {
+            gym.reviews = [review]
+          } else {
+            gym.reviews = gym.reviews.concat(review)
+          }
+        }
+      })
+    })
+    res.send({callback : 200, context : gym_rows })
+  } catch (error) {
+    console.log(error);
+    res.send({callback : 500, context : error })
+  }
+//   conn.query(select_sql, (err, rows) => {
+//     if (err) {
+//       console.log(err);
+//       return res.status(500).send({ callback: 500, err: err });
+//     }
+//     if (rows.length !== 0) {
+//       let select_gym_sql = `
+//         select * from gym_table
+//       `
+//       let selcet_review_sql = `
+//         select * from review_table
+//       `
+//       rows.map((obj,index) => {
+//         if (index === 0) {
+//           select_gym_sql += `where idx = ${obj.gym_id}`
+//           selcet_review_sql += `where idx = ${obj.idx}`
+//         } else {
+//           select_gym_sql += ` or ${obj.gym_id}`
+//           selcet_review_sql += ` or ${obj.idx}`
+//         }
+//       })
+//       conn.query(select_gym_sql, (err, recent_gyms)=> {
+//         rows.map((obj,index) => {
+//           recent_gyms[index].average_rate = Number(obj.avg_reate).toFixed(1);
+//         })
+//         return res.send({ callback: 200, context: recent_gyms});
+//       })
+//     } else {
+//       return res.send({ callback: 200, context: [] });
+//     }
+// })
 }
 /**
  * 

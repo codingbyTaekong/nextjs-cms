@@ -9,8 +9,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Rate } from 'antd';
 import { GetServerSideProps } from 'next'
 import axios from '../api/axios';
+interface GymData {
+    idx : number
+    gym_name : string
+    gym_address : string
+    gym_latitude : string
+    gym_longitude : string
+    gym_info : string
+    average_rate : string
+    reviews : Array<Review>
+    created_at : string
+    updated_at : string
+}
 
-const Home : NextPage = () => {
+interface Review {
+    idx: number
+    gym_id: number
+    review_rate: number
+    review_text: string
+    review_writer: string
+    created_at: string
+}
+interface Props {
+    recent_gyms : Array<GymData>
+}
+
+
+const Home : NextPage<Props> = ({recent_gyms}) => {
+    console.log(recent_gyms);
     const [isDrag, setIsDrag] = useState(false);
     const [startX, setStartX] = useState(0);
     const [movedX, setMovedX] = useState(0);
@@ -68,41 +94,51 @@ const Home : NextPage = () => {
                     {/* <h1>최근 뜨고 있는 전시관</h1> */}
                     <h1>최근 뜨고 있는 클라이밍장</h1>
                     <ul className={styles.recentClimbGymList} ref={recentContainerRef} onMouseDown={mouseDonwScrollHandler} onMouseMove={mouseMoveScrollHandler} onMouseUp={mouseUpScrollHandler} onMouseLeave={mouseUpScrollHandler}>
-                        <li  className={styles.recentCard} onClick={clickCarkHandler}>
-                            <h1>국립중앙박물관</h1>
-                            <p>강원도 춘천시 시청길 40-1</p>
-                            <div className={styles.reviewContainer}>
-                                <h2>최근 후기</h2>
-                                <ul>
-                                    <li>좋았어요!</li>
-                                    <li>진짜좋았어요진짜좋았어요진짜좋았어요</li>
-                                    <li>진짜좋았어요진짜좋았어요진짜좋았어요진짜좋았어요진짜좋았어요</li>
-                                </ul>
-                                <div className={styles.rateContainer}>
-                                    <Rate disabled defaultValue={4} />
-                                    <p>
-                                        <span className={styles.totalRate}>4&nbsp;</span>
-                                        <span className={styles.maxRate}>/5</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                        <li className={styles.recentCard}>
-                            <h1>국립중앙박물관</h1>
-                            <p>강원도 춘천시 시청길 40-1</p>
-                        </li>
-                        <li className={styles.recentCard}>
-                            <h1>국립중앙박물관</h1>
-                            <p>강원도 춘천시 시청길 40-1</p>
-                        </li>
-                        <li className={styles.recentCard}>
-                            <h1>국립중앙박물관</h1>
-                            <p>강원도 춘천시 시청길 40-1</p>
-                        </li>
-                        <li className={styles.recentCard}>
-                            <h1>국립중앙박물관</h1>
-                            <p>강원도 춘천시 시청길 40-1</p>
-                        </li>
+
+                        {recent_gyms.map((gym, i) => {
+                            // console.log(new Date(gym.reviews[0].created_at))
+                            // const recent_date = new Date(gym.reviews[0].created_at).getTime();
+                            // const now = new Date().getTime();
+                            // console.log(now - recent_date);
+                            // const elapsedMSec = now - recent_date
+                            // // 초
+                            // const elapsedSec = elapsedMSec / 1000;
+                            // // 분
+                            // const elapsedMin = elapsedMSec / 1000 / 60;
+                            // // 시
+                            // const elapsedHour = elapsedMSec / 1000 / 60 / 60;
+                            // // 날짜
+                            // const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+                            // console.log(
+                            //     `
+                            //         초 : ${elapsedSec}
+                            //         분 : ${elapsedMin}
+                            //         시 : ${elapsedHour}
+                            //         일 : ${elapsedDay}
+                            //     `
+                            // )
+                            return (
+                                <li key={i} className={styles.recentCard} onClick={clickCarkHandler}>
+                                    <h1>{gym.gym_name}</h1>
+                                    <p>{gym.gym_address}</p>
+                                    <div className={styles.reviewContainer}>
+                                        <h2>최근 후기</h2>
+                                        <ul>
+                                            {gym.reviews.map((review, j)=>{
+                                                return <li key={j}>{review.review_text}</li>
+                                            })}
+                                        </ul>
+                                        <div className={styles.rateContainer}>
+                                            <Rate disabled defaultValue={Number(gym.average_rate)} />
+                                            <p>
+                                                <span className={styles.totalRate}>{gym.average_rate}&nbsp;</span>
+                                                <span className={styles.maxRate}>/5</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            )
+                        })}
                     </ul>
                 </section>
                 
@@ -113,8 +149,13 @@ const Home : NextPage = () => {
     )
 }
 
-// export const getServerSideProps : GetServerSideProps = async (context) => {
-//     const recentReviewGyms = await axios.get(``)
-// }
+export const getServerSideProps : GetServerSideProps = async (context) => {
+    const recent_gyms = await (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gym/recent_reviews`)).data.context;
+    return {
+        props : {
+            recent_gyms
+        }
+    }
+}
 
 export default Home
