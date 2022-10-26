@@ -93,7 +93,12 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                 <section className={styles.recentClimbGymListContainer}>
                     {/* <h1>최근 뜨고 있는 전시관</h1> */}
                     <h1>최근 뜨고 있는 클라이밍장</h1>
-                    <ul className={styles.recentClimbGymList} ref={recentContainerRef} onMouseDown={mouseDonwScrollHandler} onMouseMove={mouseMoveScrollHandler} onMouseUp={mouseUpScrollHandler} onMouseLeave={mouseUpScrollHandler}>
+                    <ul className={styles.recentClimbGymList} 
+                        ref={recentContainerRef} 
+                        onMouseDown={mouseDonwScrollHandler} 
+                        onMouseMove={mouseMoveScrollHandler} 
+                        onMouseUp={mouseUpScrollHandler}
+                        onMouseLeave={mouseUpScrollHandler}>
 
                         {recent_gyms.map((gym, i) => {
                             // console.log(new Date(gym.reviews[0].created_at))
