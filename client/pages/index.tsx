@@ -10,38 +10,44 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Rate } from 'antd';
 import { GetServerSideProps } from 'next'
 import axios from '../api/axios';
-interface GymData {
-    idx : number
-    gym_name : string
-    gym_address : string
-    gym_latitude : string
-    gym_longitude : string
-    gym_info : string
-    average_rate : string
-    reviews : Array<Review>
-    created_at : string
-    updated_at : string
-}
+import GymCard from '../components/public/GymCard';
+import {GymData} from '../types/type'
 
-interface Review {
-    idx: number
-    gym_id: number
-    review_rate: number
-    review_text: string
-    review_writer: string
-    created_at: string
-}
 interface Props {
     recent_gyms : Array<GymData>
 }
 
+interface ActiveGym {
+    clicked : boolean,
+    data : GymData
+}
 
 const Home : NextPage<Props> = ({recent_gyms}) => {
-    // console.log(recent_gyms);
+    // 드래그 관련 state
     const [isDrag, setIsDrag] = useState(false);
     const [startX, setStartX] = useState(0);
     const [movedX, setMovedX] = useState(0);
     const recentContainerRef = useRef<HTMLUListElement>(null);
+    // 상세보기 관련 state
+    const [isActiveGym, setIsActiveGym] = useState<ActiveGym | null>(null);
+    /**
+     * 카드 클릭 이벤트 핸들러
+     * @param e 
+     * @param gym  
+     */
+    const clickCarkHandler = (e: React.MouseEvent<HTMLLIElement>, gym : GymData) => {
+        e.preventDefault();
+        setIsActiveGym({
+            ...isActiveGym,
+            clicked : true,
+            data : gym
+        })
+    }
+    
+    /**
+     * 드래그가 시작 했을 때 핸들러
+     * @param e 
+     */
     const mouseDonwScrollHandler = (e : React.MouseEvent<HTMLUListElement>) => {
         if (recentContainerRef.current && recentContainerRef.current.scrollWidth >= 1070) {
             e.preventDefault();
@@ -49,21 +55,28 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
             setStartX(e.pageX);
         }
     }
+    /**
+     * 드래그 중일 때 핸들러
+     * @param e 
+     */
     const mouseMoveScrollHandler = (e : React.MouseEvent<HTMLUListElement>) => {
         if (isDrag) {
             setMovedX(e.pageX - startX)
         }
     }
-    const clickCarkHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-        e.preventDefault();
-        console.log("클릭")
-    }
+    /**
+     * 드래그 취소 이벤트 핸들러
+     * @param e 
+     */
     const mouseUpScrollHandler = (e : React.MouseEvent<HTMLUListElement>) => {
         if (isDrag) {
             setStartX(0);
             setIsDrag(false);
         }
     }
+    /**
+     * 드래그 생애주기
+     */
     useEffect(()=> {
         if (isDrag) {
             // console.log("실제로 움직인 좌표", movedX);
@@ -126,7 +139,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                             //     `
                             // )
                             return (
-                                <li key={i} className={styles.recentCard} onClick={clickCarkHandler}>
+                                <li key={i} className={styles.recentCard} onClick={(e) => clickCarkHandler(e, gym)}>
                                     <h1>{gym.gym_name}</h1>
                                     <p>{gym.gym_address}</p>
                                     <div className={styles.reviewContainer}>
@@ -148,7 +161,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                             )
                         })}
                         {recent_gyms.length < 5 && <>
-                            <li className={styles.emptysetCard} onClick={clickCarkHandler}>
+                            <li className={styles.emptysetCard}>
                                 <h3>최근 올라온 리뷰가 없어요🥺</h3>
                                 <div className={styles.circle}>
                                     <FontAwesomeIcon icon={faPlus} />
@@ -158,7 +171,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                         </>}
                     </ul>
                 </section>
-                
+                {isActiveGym?.clicked && <GymCard gym={isActiveGym.data} />}
 
             </main>
         </>
