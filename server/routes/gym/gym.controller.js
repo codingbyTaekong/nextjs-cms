@@ -43,34 +43,35 @@ exports.recentReviewGyms = async (req, res) => {
         select_gym_sql += `where idx = ${obj.gym_id}`
         selcet_review_sql += `where gym_id = ${obj.gym_id}`
       } else if (index === recents_reviews_rows.length -1) {
-        select_gym_sql += ` or ${obj.gym_id}`
-        selcet_review_sql += ` or ${obj.gym_id} order by created_at DESC`
+        select_gym_sql += ` or idx = ${obj.gym_id}`
+        selcet_review_sql += ` or gym_id = ${obj.gym_id} order by created_at DESC`
       } else {
-        select_gym_sql += ` or ${obj.gym_id}`
-        selcet_review_sql += ` or ${obj.gym_id}`
+        select_gym_sql += ` or idx = ${obj.gym_id}`
+        selcet_review_sql += ` or gym_id = ${obj.gym_id}`
       }
     })
-    // console.log(selcet_review_sql);
+    console.log(selcet_review_sql);
+    console.log(select_gym_sql);
     const [gym_rows] = await conn.promise().query(select_gym_sql);
     const [review_rows] = await conn.promise().query(selcet_review_sql);
-    console.log(gym_rows);
-    console.log(review_rows)
-    // recents_reviews_rows.map((obj,index) => {
-      // gym_rows[index].average_rate = Number(obj.avg_reate).toFixed(1);
-    // })
+    // console.log(gym_rows);
+    // console.log(review_rows)
+    recents_reviews_rows.map((obj,index) => {
+      gym_rows[index].average_rate = Number(obj.avg_reate).toFixed(1);
+    })
 
-    // review_rows.map((review, index) => {
-    //   const gym_id = review.gym_id;
-    //   gym_rows.map(gym => {
-    //     if (gym.idx === gym_id) {
-    //       if (!gym.reviews) {
-    //         gym.reviews = [review]
-    //       } else {
-    //         gym.reviews = gym.reviews.concat(review)
-    //       }
-    //     }
-    //   })
-    // })
+    review_rows.map((review, index) => {
+      const gym_id = review.gym_id;
+      gym_rows.map(gym => {
+        if (gym.idx === gym_id) {
+          if (!gym.reviews) {
+            gym.reviews = [review]
+          } else {
+            gym.reviews = gym.reviews.concat(review)
+          }
+        }
+      })
+    })
     res.send({callback : 200, context : gym_rows })
   } catch (error) {
     console.log(error);

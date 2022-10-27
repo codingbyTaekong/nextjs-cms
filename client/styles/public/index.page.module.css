@@ -94,7 +94,7 @@
 .recentClimbGymList::-webkit-scrollbar {
     opacity: 0;
 }
-.recentCard {
+.recentCard, .emptysetCard{
     flex-basis: 280px;
     flex-shrink: 0;
     width: 270px;
@@ -105,11 +105,12 @@
     cursor: pointer;
 }
 
+
 .recentCard:not(:last-of-type) {
     margin-right: 18px;
 }
 
-.recentCard:hover {
+.recentCard:hover, .emptysetCard:hover {
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
@@ -177,4 +178,50 @@
 .rateContainer > p > .maxRate {
     color: rgba(0,0,0,0.3);
     font-size: 13px;
+}
+
+
+/* 최근 달린 리뷰 엠티셋 */
+
+.emptysetCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.emptysetCard h3 {
+    font-family: var(--fn-sans);
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.emptysetCard .circle {
+    margin-top: 10%;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color : #fff;
+}
+
+.emptysetCard .pleaseReview {
+    margin-top: 5%;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+}
+.emptysetCard .pleaseReview::after {
+    content: '😎 소중한 리뷰를 추가해주세요:)';
+}
+/* 여러분의 소중한 리뷰를<br/> 추가해주세요{":)"}😎 */
+.emptysetCard:hover .circle {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.emptysetCard:hover .pleaseReview::after {
+    content: '😍 추가 해주실 거죠?';
 }

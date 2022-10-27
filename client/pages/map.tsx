@@ -327,7 +327,7 @@ const Map: NextPage = () => {
 
 
                 const geocoder = new window.kakao.maps.services.Geocoder();
-                geocoder.addressSearch('서울특별시 강서구 염창동 262-1', function(result : any, status : any) {
+                geocoder.addressSearch('서울 동대문구 장한로2길 63 호정빌딩 2F', function(result : any, status : any) {
 
                     // 정상적으로 검색이 완료됐으면 
                      if (status === window.kakao.maps.services.Status.OK) {

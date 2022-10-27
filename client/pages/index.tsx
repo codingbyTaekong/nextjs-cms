@@ -5,6 +5,7 @@ import styles from '../styles/public/index.page.module.css'
 import GNB from '../components/public/GNB';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
+import { faPlus } from '@fortawesome/pro-solid-svg-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Rate } from 'antd';
 import { GetServerSideProps } from 'next'
@@ -36,15 +37,17 @@ interface Props {
 
 
 const Home : NextPage<Props> = ({recent_gyms}) => {
-    console.log(recent_gyms);
+    // console.log(recent_gyms);
     const [isDrag, setIsDrag] = useState(false);
     const [startX, setStartX] = useState(0);
     const [movedX, setMovedX] = useState(0);
     const recentContainerRef = useRef<HTMLUListElement>(null);
     const mouseDonwScrollHandler = (e : React.MouseEvent<HTMLUListElement>) => {
-        e.preventDefault();
-        setIsDrag(true);
-        setStartX(e.pageX);
+        if (recentContainerRef.current && recentContainerRef.current.scrollWidth >= 1070) {
+            e.preventDefault();
+            setIsDrag(true);
+            setStartX(e.pageX);
+        }
     }
     const mouseMoveScrollHandler = (e : React.MouseEvent<HTMLUListElement>) => {
         if (isDrag) {
@@ -92,7 +95,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                 </section>
                 <section className={styles.recentClimbGymListContainer}>
                     {/* <h1>최근 뜨고 있는 전시관</h1> */}
-                    <h1>최근 뜨고 있는 클라이밍장</h1>
+                    <h1>따끈따끈한 리뷰</h1>
                     <ul className={styles.recentClimbGymList} 
                         ref={recentContainerRef} 
                         onMouseDown={mouseDonwScrollHandler} 
@@ -144,6 +147,15 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                                 </li>
                             )
                         })}
+                        {recent_gyms.length < 5 && <>
+                            <li className={styles.emptysetCard} onClick={clickCarkHandler}>
+                                <h3>최근 올라온 리뷰가 없어요🥺</h3>
+                                <div className={styles.circle}>
+                                    <FontAwesomeIcon icon={faPlus} />
+                                </div>
+                                <span className={styles.pleaseReview}></span>
+                            </li>
+                        </>}
                     </ul>
                 </section>
                 
