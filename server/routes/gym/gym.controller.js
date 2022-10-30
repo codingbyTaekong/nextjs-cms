@@ -110,12 +110,12 @@ exports.recentReviewGyms = async (req, res) => {
 // })
 }
 
-exports.getGymReviews = async (req, res) => {
+exports.getGymTextReviews = async (req, res) => {
   try {
-    const {query: { id, offset } } = req;
-    const select_page_count = `select count(*) as max_offset from review_table where gym_id=${id}`
+    const {query: { id, offset, type } } = req;
+    const select_page_count = `select count(*) as max_offset from review_table where gym_id=${id} and review_type='${type}'`
     let select_sql = `
-      select * from review_table where gym_id = '${id}' limit 5
+      select * from review_table where gym_id = '${id}' and review_type='${type}' limit 5
     `
     if (offset !== null && offset !== undefined) {
       select_sql += ` offset ${offset}`

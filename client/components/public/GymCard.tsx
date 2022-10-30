@@ -4,6 +4,9 @@ import { useEffect,useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import axios from '../../api/axios';
 import {GymData, Review} from '../../types/type'
+import { Image, Rate } from 'antd'
+import styles from "../../styles/public/gymcard.module.css";
+
 
 declare global {
     interface Window {
@@ -26,7 +29,7 @@ type BOULDERING = "BOULDERING"
 type TOPROFE = "TOPROFE"
 
 const GymCard = ({gym, onRemove} : Props) => {
-    console.log(gym)
+    const [visible, setVisible] = useState(false);
     const offset = useRef(0);
     const max_offset = useRef(0);
     const [gymInfo, setGymInfo] = useState<Array<string>>([]);
@@ -39,16 +42,16 @@ const GymCard = ({gym, onRemove} : Props) => {
         }
         const getData = async () => {
             try {
-                const data = await (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gym/get_gym_reviews`, {
+                const text_review_data = await (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gym/get_gym_text_reviews`, {
                     params : {
                         id : gym.idx,
-                        offset : offset.current
+                        offset : offset.current,
+                        type : "text"
                     }
                 })).data
-                console.log(data)
-                if (data.callback === 200) {
-                    max_offset.current = data.max_offset;
-                    setReviews(data.reviews);
+                if (text_review_data.callback === 200) {
+                    max_offset.current = text_review_data.max_offset;
+                    setReviews(text_review_data.reviews);
                 }
             } catch (error) {
                 console.log("서버와의 통신 중에서 에러가 발생했습니다.")
@@ -80,16 +83,62 @@ const GymCard = ({gym, onRemove} : Props) => {
             </FacilityContainer>
             <ReviewContainer>
                 <ReviewTypeTitle>사진리뷰(2)</ReviewTypeTitle>
-                <ReviewTypeTitle>방문자리뷰(2)</ReviewTypeTitle>
+                <ReviewTypeTitle>방문자리뷰({reviews.length})</ReviewTypeTitle>
                 {/* 사진 데이터가 있는 경우 */}
                 <PhotoReviewContainer>
-                    <PhotoReview></PhotoReview>
-                    <PhotoReview></PhotoReview>
-                    <PhotoReview></PhotoReview>
-                    <PhotoReview></PhotoReview>
+                    <PhotoReview>
+                        <Image
+                            rootClassName={styles.preview}
+                            preview={{visible : false}} 
+                            width={'100%'} src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp"
+                        onClick={() => setVisible(true)} />
+                    </PhotoReview>
+                    <PhotoReview>
+                        <Image
+                            rootClassName={styles.preview}
+                            preview={{visible : false}} 
+                            width={'100%'} src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp"
+                        onClick={() => setVisible(true)} />
+                    </PhotoReview>
+                    <PhotoReview>
+                        <Image
+                            rootClassName={styles.preview}
+                            preview={{visible : false}} 
+                            width={'100%'} src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp"
+                        onClick={() => setVisible(true)} />
+                    </PhotoReview>
+                    <PhotoReview>
+                        <Image
+                            preview={false}
+                            rootClassName={styles.preview}
+                            width={'100%'} src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp"
+                        />
+                    </PhotoReview>
                 </PhotoReviewContainer>
+                {/* 사진데이터가 없는 경우 추가해야함 */}
+
+                {/* 리뷰 데이터가 있는 경우 */}
+                <TextReviewContainer>
+                    {reviews.map((review) => {
+                        return <TextReview key={review.idx}>
+                            <div className='review_info'>
+                                <h1>{review.review_writer}</h1>
+                                <div className='rate-container'>
+                                    <Rate disabled defaultValue={review.review_rate} />
+                                </div>
+                                <p>{review.created_at.split('T')[0]}</p>
+                            </div>
+                            <p className='review-text'>{review.review_text}</p>
+                        </TextReview>
+                    } )}
+                </TextReviewContainer>
             </ReviewContainer>
         </Container>
+        <div style={{ display: 'none' }}>
+            <Image.PreviewGroup preview={{ visible, onVisibleChange: vis => setVisible(vis) }}>
+                <Image src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp" />
+            </Image.PreviewGroup>
+        </div>
     </>
 }
 
@@ -130,7 +179,7 @@ const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
 const Container = styled.div`
     width: 80%;
     max-width: 1024px;
-    height: 80%;
+    height: 90%;
     border-radius: 18px;
     border : 1px solid rgba(0,0,0,0.1);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
@@ -260,13 +309,15 @@ const PhotoReviewContainer = styled.div`
     height: 100%;
     grid-template-columns: repeat(2, 50%);
     grid-template-rows: repeat(2, 50%);
-    margin-top: 12px;
+    padding-top: 12px;
 `
 
 const PhotoReview = styled.div`
     width: calc(100% - 3px);
     height: calc(100% - 3px);
     border: 1px solid rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
     &:nth-of-type(1) {
         border-top-left-radius: 12px;
     }
@@ -278,5 +329,56 @@ const PhotoReview = styled.div`
     }
     &:nth-of-type(4) {
         border-bottom-right-radius: 12px;
+    }
+`
+
+const TextReviewContainer = styled.div`
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(5, 20%);
+    width: 100%;
+    height: 100%;
+    padding-top : 12px;
+    overflow: hidden;
+`
+
+const TextReview = styled.div`
+    width: 100%;
+    height: calc(100% - 6px);
+    border-radius: 12px;
+    border : 1px solid rgba(0,0,0,0.1);
+    padding : 3% 3.2%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    & > div.review_info {
+        display: flex;
+        align-items: flex-end;
+    }
+    & div.review_info > h1 {
+        font-size: 14px;
+        font-family: var(--fn-sans);
+        font-weight: 500;
+    }
+    & div.review_info > .rate-container {
+        display: flex;
+        font-size: 14px;
+        margin-left: 8px;
+    }
+    & div.review_info > .rate-container .ant-rate-star:not(:last-child) {
+        margin-right: 2px;
+    }
+    & div.review_info > p {
+        font-size: 12px;
+        color : rgba(0,0,0,0.5);
+        margin-left: auto;
+    }
+    & > .review-text {
+        font-size: 15px;
+        font-family: var(--fn-sans);
+        margin-top: 12px;
+        text-overflow: ellipsis; 
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
     }
 `
