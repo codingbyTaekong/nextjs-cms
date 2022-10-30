@@ -109,6 +109,24 @@ exports.recentReviewGyms = async (req, res) => {
 //     }
 // })
 }
+
+exports.getGymReviews = async (req, res) => {
+  try {
+    const {query: { id, offset } } = req;
+    const select_page_count = `select count(*) as max_offset from review_table where gym_id=${id}`
+    let select_sql = `
+      select * from review_table where gym_id = '${id}' limit 5
+    `
+    if (offset !== null && offset !== undefined) {
+      select_sql += ` offset ${offset}`
+    }
+    const [max_offset_row] = await conn.promise().query(select_page_count);
+    const [reviews_rows] = await conn.promise().query(select_sql);
+    res.send({callback : 200, max_offset : Math.floor(max_offset_row[0].max_offset / 5), reviews : reviews_rows})
+  } catch (error) {
+    res.status(500).send({callback : 500, context : error })
+  }
+}
 /**
  * 
  17:33:03	SELECT * FROM  

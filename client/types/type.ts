@@ -2,6 +2,7 @@
 export interface GymData {
     idx : number
     gym_name : string
+    gym_type : string
     gym_address : string
     gym_latitude : string
     gym_longitude : string

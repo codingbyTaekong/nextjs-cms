@@ -1,6 +1,9 @@
-import { useEffect,useRef } from 'react'
+import { faXmark } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect,useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
-import {GymData} from '../../types/type'
+import axios from '../../api/axios';
+import {GymData, Review} from '../../types/type'
 
 declare global {
     interface Window {
@@ -12,6 +15,7 @@ declare global {
 
 interface Props {
     gym : GymData
+    onRemove : () => void
 }
 
 interface PLACETYPE {
@@ -21,48 +25,107 @@ interface PLACETYPE {
 type BOULDERING = "BOULDERING"
 type TOPROFE = "TOPROFE"
 
-const GymCard = ({gym} : Props) => {
+const GymCard = ({gym, onRemove} : Props) => {
     console.log(gym)
-    const GymMap = useRef<any>();
+    const offset = useRef(0);
+    const max_offset = useRef(0);
+    const [gymInfo, setGymInfo] = useState<Array<string>>([]);
+    const [reviews, setReviews] = useState<Array<Review>>([]);
     useEffect(()=> {
-        const mapScript = document.createElement("script");
-        mapScript.async = true;
-        mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
-        document.head.appendChild(mapScript);
-        const latitude = Number(gym.gym_latitude);
-        const longitude = Number(gym.gym_longitude);
-        const onLoadKakaoMap = () => {
-            window.kakao.maps.load(() => {
-                const markerImg = new window.kakao.maps.MarkerImage("https://t1.daumcdn.net/mapjsapi/images/2x/marker.png", new window.kakao.maps.Size(29, 42))
-                const marker = {
-                    position : new window.kakao.maps.LatLng(latitude, longitude),
-                    image : markerImg
-                }
-                // https://t1.daumcdn.net/mapjsapi/images/2x/marker.png
-                const container = document.getElementById('map');
-                const options = {
-                    center : new window.kakao.maps.LatLng(latitude, longitude),
-                    level : 3,
-                    marker
-                }
-                const map = new window.kakao.maps.StaticMap(container, options)
-            })
+        LoadKakaoMap(gym.gym_latitude, gym.gym_longitude);
+        if (gym.gym_info !== '' && gym.gym_info !== null) {
+            const infoArray = gym.gym_info.split(',');
+            setGymInfo(infoArray);
         }
-        mapScript.addEventListener("load", onLoadKakaoMap);
+        const getData = async () => {
+            try {
+                const data = await (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gym/get_gym_reviews`, {
+                    params : {
+                        id : gym.idx,
+                        offset : offset.current
+                    }
+                })).data
+                console.log(data)
+                if (data.callback === 200) {
+                    max_offset.current = data.max_offset;
+                    setReviews(data.reviews);
+                }
+            } catch (error) {
+                console.log("서버와의 통신 중에서 에러가 발생했습니다.")
+                console.log(error);
+            }
+
+        }
+        getData();
     }, [])
+    console.log(reviews);
     return <>
         <Container>
-            <PlaceType type="BOULDERING">ad</PlaceType>
+            <RemovePopup onClick={onRemove}>
+                <FontAwesomeIcon icon={faXmark} />
+            </RemovePopup>
+            {gym.gym_type === "볼더링" && <PlaceType type="BOULDERING">{gym.gym_type}</PlaceType>}
             <GymTitle>{gym.gym_name}</GymTitle>
             <GymAddressContainer>
                 <GymAddress>{gym.gym_address}</GymAddress>
             </GymAddressContainer>
             <KakaoMap id="map"></KakaoMap>
+            <FacilityContainer>
+                <h2>시설</h2>
+                <ul>
+                    {gymInfo.length !== 0 && gymInfo.map((info, i) => {
+                        return <li key={i}>{info}</li>
+                    })}
+                </ul>
+            </FacilityContainer>
+            <ReviewContainer>
+                <ReviewTypeTitle>사진리뷰(2)</ReviewTypeTitle>
+                <ReviewTypeTitle>방문자리뷰(2)</ReviewTypeTitle>
+                {/* 사진 데이터가 있는 경우 */}
+                <PhotoReviewContainer>
+                    <PhotoReview></PhotoReview>
+                    <PhotoReview></PhotoReview>
+                    <PhotoReview></PhotoReview>
+                    <PhotoReview></PhotoReview>
+                </PhotoReviewContainer>
+            </ReviewContainer>
         </Container>
     </>
 }
 
 export default GymCard;
+
+/**
+ * 카카오 정적지도 불러오는 함수
+ * @param gym_latitude 
+ * @param gym_longitude 
+ */
+const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
+    const mapScript = document.createElement("script");
+    mapScript.async = true;
+    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
+    document.head.appendChild(mapScript);
+    const latitude = Number(gym_latitude);
+    const longitude = Number(gym_longitude);
+    const onLoadKakaoMap = () => {
+        window.kakao.maps.load(() => {
+            const markerImg = new window.kakao.maps.MarkerImage("https://t1.daumcdn.net/mapjsapi/images/2x/marker.png", new window.kakao.maps.Size(29, 42))
+            const marker = {
+                position : new window.kakao.maps.LatLng(latitude, longitude),
+                image : markerImg
+            }
+            // https://t1.daumcdn.net/mapjsapi/images/2x/marker.png
+            const container = document.getElementById('map');
+            const options = {
+                center : new window.kakao.maps.LatLng(latitude, longitude),
+                level : 3,
+                marker
+            }
+            const map = new window.kakao.maps.StaticMap(container, options)
+        })
+    }
+    mapScript.addEventListener("load", onLoadKakaoMap);
+}
 
 const Container = styled.div`
     width: 80%;
@@ -78,15 +141,43 @@ const Container = styled.div`
     left: 50%;
     transform: translate(-50%,-50%);
     padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
 `
 
+const RemovePopup = styled.button`
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: unset;
+    border: 0;
+    position: absolute;
+    top: 15px;
+    right : 15px;
+    font-size : 24px;
+    color : rgba(0,0,0,0.5);
+    cursor: pointer;
+    &:hover {
+        color : rgb(0,0,0);
+    }
+`
+
+
 const PlaceType = styled.span<PLACETYPE>`
-    padding: 6px 10px;
+    width: fit-content;
+    padding: 4px 8px;
     font-size: var(--fn-sans);
-    border-radius: 12px;
+    border-radius: 8px;
+    font-size: 14px;
     color : #fff;
-    ${(props)=> props.type === "boulderinㅎ" && css`
-        background-color: aqua;
+    ${(props)=> props.type === "BOULDERING" && css`
+        background-color: #0077ff;
+    `
+    }
+    ${(props)=> props.type === "TOPRUPE" && css`
+        background-color: #ffae00;
     `
     }
     
@@ -115,6 +206,77 @@ const KakaoMap = styled.div`
     border-radius: 12px;
     overflow: hidden;
     height: 150px;
+    min-height: 150px;
     margin-top: 25px;
     border: 1px solid rgba(0,0,0,0.1);
+`
+
+const FacilityContainer = styled.div`
+    padding-top: 15px;
+    & > h2 {
+        font-family: var(--fn-sans);
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: -0.78px;
+        color : #1a1a1a;
+    }
+    & > ul {
+        display: flex;
+        padding-top: 12px;
+    }
+    & > ul > li {
+        border-radius: 8px;
+        border : 1px solid rgba(0,0,0,0.1);
+        padding: 4px 6px;
+        font-family: var(--fn-sans);
+        font-weight: 400;
+        font-size: 14px;
+    }
+    & > ul > li:not(:last-of-type) {
+        margin-right: 12px;
+    }
+`
+
+const ReviewContainer = styled.div`
+    padding-top: 12px;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: 16px calc(100% - 16px);
+`
+
+const ReviewTypeTitle = styled.h2`
+    font-family: var(--fn-sans);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.78px;
+    color : #1a1a1a;
+`
+
+const PhotoReviewContainer = styled.div`
+    display: grid;
+    width: calc(100% - 12px);
+    height: 100%;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: repeat(2, 50%);
+    margin-top: 12px;
+`
+
+const PhotoReview = styled.div`
+    width: calc(100% - 3px);
+    height: calc(100% - 3px);
+    border: 1px solid rgba(0,0,0,0.1);
+    &:nth-of-type(1) {
+        border-top-left-radius: 12px;
+    }
+    &:nth-of-type(2) {
+        border-top-right-radius: 12px;
+    }
+    &:nth-of-type(3) {
+        border-bottom-left-radius: 12px;
+    }
+    &:nth-of-type(4) {
+        border-bottom-right-radius: 12px;
+    }
 `

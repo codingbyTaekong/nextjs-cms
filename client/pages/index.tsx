@@ -35,7 +35,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
      * @param e 
      * @param gym  
      */
-    const clickCarkHandler = (e: React.MouseEvent<HTMLLIElement>, gym : GymData) => {
+    const clickCardHandler = (e: React.MouseEvent<HTMLLIElement>, gym : GymData) => {
         e.preventDefault();
         setIsActiveGym({
             ...isActiveGym,
@@ -44,6 +44,13 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
         })
     }
     
+    /**
+     * 카드 닫기 핸들러
+     */
+    const removeCardHandler = () => {
+        setIsActiveGym(null)
+    }
+
     /**
      * 드래그가 시작 했을 때 핸들러
      * @param e 
@@ -139,7 +146,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                             //     `
                             // )
                             return (
-                                <li key={i} className={styles.recentCard} onClick={(e) => clickCarkHandler(e, gym)}>
+                                <li key={i} className={styles.recentCard} onClick={(e) => clickCardHandler(e, gym)}>
                                     <h1>{gym.gym_name}</h1>
                                     <p>{gym.gym_address}</p>
                                     <div className={styles.reviewContainer}>
@@ -171,7 +178,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                         </>}
                     </ul>
                 </section>
-                {isActiveGym?.clicked && <GymCard gym={isActiveGym.data} />}
+                {isActiveGym?.clicked && <GymCard gym={isActiveGym.data} onRemove={removeCardHandler} />}
 
             </main>
         </>
