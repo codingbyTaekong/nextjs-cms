@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken')
 const db_config = require("../db_config");
 const conn = db_config.init();
-exports.accessTokenMiddleware = (req, res, next) => {
+exports.accessTokenMiddleware = async (req, res, next) => {
     // read the token from header or url 
-    const token = req.headers["authorization"] || req.body.token
+    const token = req.headers["authorization"]
 
     // token does not exist
     if(!token) {
@@ -12,7 +12,7 @@ exports.accessTokenMiddleware = (req, res, next) => {
             message: 'not logged in'
         })
     }
-
+    
     // create a promise that decodes the token
     const p = new Promise(
         (resolve, reject) => {
@@ -41,7 +41,7 @@ exports.accessTokenMiddleware = (req, res, next) => {
 
 
 exports.refreshTokenMiddleware = (req, res, next) => {
-    const token_key = req.body.token
+    const token_key = req.cookies.secureCookie
 
     // token does not exist
     if(!token_key) {
@@ -56,11 +56,11 @@ exports.refreshTokenMiddleware = (req, res, next) => {
     `;
     conn.query(select_sql, async (err, rows) => {
         if (err) {
-        console.log(err);
-        return res.status(500).send({ callback: 500, message: err });
+            console.log(err);
+            return res.status(500).send({ callback: 500, message: err });
         }
         if (rows.length === 0) {
-        return res.status(403).send({ callback: 403, message: "잘못된 토큰입니다." });
+            return res.status(403).send({ callback: 403, message: "잘못된 토큰입니다." });
         }
         const token = rows[0].token
 

@@ -5,7 +5,7 @@ const dayjs = require("dayjs");
 const { accessTokenMiddleware, refreshTokenMiddleware } = require("../../../middleware/auth");
 const conn = db_config.init();
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   if (req.body.id && req.body.password) {
 
     const { body: { id, password } } = req;
@@ -20,45 +20,78 @@ exports.login = (req, res) => {
       if (rows.length === 0) {
         return res.send({ callback: 404, err: "존재하지 않는 아이디입니다." });
       } else {
+        
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedTokenKey = bcrypt.hashSync(`${id + password}_bigchoi`, salt);
-        nickname = rows[0].user_nickname;
-        rule = rows[0].rule;
+        const nickname = rows[0].user_nickname;
+        const rule = rows[0].rule;
         // 암호화된 비밀번호
         const encodedPassword = rows[0].user_pwd;
         // console.log(encodedPassword)
-        bcrypt.compare(password, encodedPassword, (err, same) => {
+        bcrypt.compare(password, encodedPassword, async (err, same) => {
           if (err) console.log(err);
           // async callback
           if (same) {
             const accessToken = jwt.sign(
-              { id, nickname },
+              { id, nickname, rule },
               process.env.JWT_SECRET,
               {
                 expiresIn: "15m",
                 issuer: "bigchoi",
               }
             );
-            const refreshToken = jwt.sign(
-              { id },
-              process.env.JWT_SECRET,
-              {
-                expiresIn: "14h",
-                issuer: "bigchoi",
+            jwt.verify(rows[0].token, process.env.JWT_SECRET, async (err, decoded) => {
+              if(err) {
+                // 리프레쉬 토큰이 만료되었다면 업데이트 로직
+                const refreshToken = jwt.sign(
+                  { id },
+                  process.env.JWT_SECRET,
+                  {
+                    expiresIn: "14h",
+                    issuer: "bigchoi",
+                  }
+                  );
+                  const update_sql = `update user_table set updated_at='NOW()', token='${refreshToken}' where user_id='${id}'`
+                  await conn.promise().query(update_sql);
+                  res.cookie('secureCookie', hashedTokenKey, {
+                    secure: true,
+                    httpOnly: true,
+                    expires: dayjs().add(30, "days").toDate()
+                  })
+                  return res.send({
+                    callback : 200,
+                    user : {
+                      id,
+                      nickname,
+                      rule
+                    },
+                    token : {
+                      accessToken,
+                      hashedTokenKey
+                    }
+                  })
               }
-            );
-            res.cookie('secureCookie', hashedTokenKey, {
-              secure: true,
-              httpOnly: true,
-              expires: dayjs().add(30, "days").toDate()
-            })
-            return res.send({
-              callback : 200,
-              token : {
-                accessToken,
-                refreshToken
-              }
+              // 리프레쉬 토큰이 만료되지않았다면 로직
+              const update_sql = `update user_table set updated_at='NOW()' where user_id='${id}'`
+              await conn.promise().query(update_sql);
+              res.cookie('secureCookie', hashedTokenKey, {
+                secure: true,
+                httpOnly: true,
+                expires: dayjs().add(30, "days").toDate()
+              })
+              return res.send({
+                callback : 200,
+                user : {
+                  id,
+                  nickname,
+                  rule
+                },
+                token : {
+                  accessToken,
+                  hashedTokenKey
+                }
+              })
             })
           } else {
             res.send({ callback : 403, context: "비밀번호가 다릅니다!" });
@@ -67,9 +100,28 @@ exports.login = (req, res) => {
       }
     });
   } else {
-    accessTokenMiddleware(req, res, () => {
-      console.log("완료")
-      res.send("oh")
+    refreshTokenMiddleware(req, res, (decoded) => {
+      console.log(decoded)
+      const {id, nickname, rule} = decoded
+      const accessToken = jwt.sign(
+        { id, nickname, rule },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "15m",
+          issuer: "bigchoi",
+        }
+      );
+      res.send({
+        callback : 200,
+        user : {
+          id,
+          nickname,
+          rule
+        },
+        token : {
+          accessToken,
+        }
+      })
     })
   }
 };
@@ -124,7 +176,7 @@ exports.register = async (req, res) => {
     const salt = bcrypt.genSaltSync(saltRounds);
     const hashedPassword = bcrypt.hashSync(password, salt);
     const hashedTokenKey = bcrypt.hashSync(`${id + password}_bigchoi`, salt);
-    const refreshToken = jwt.sign({}, process.env.JWT_SECRET, {
+    const refreshToken = jwt.sign({ id, nickname, rule : 1 }, process.env.JWT_SECRET, {
       expiresIn: "14d",
       issuer: "bigchoi",
     });
@@ -148,7 +200,7 @@ exports.register = async (req, res) => {
       }
       //accessToken 발행
       const accessToken = jwt.sign(
-        { id, nickname },
+        { id, nickname, rule : 1},
         process.env.JWT_SECRET,
         {
           expiresIn: "15m",
@@ -166,9 +218,14 @@ exports.register = async (req, res) => {
         expires: dayjs().add(30, "days").toDate()
       })
       res.send({
-        callback: 200, token: {
+        callback: 200, 
+        user : {
+          id,
+          nickname
+        },
+        token: {
           accessToken,
-          refreshToken
+          hashedTokenKey
         }
       });
     });
@@ -178,7 +235,7 @@ exports.register = async (req, res) => {
 }
 
 
-exports.refreshToken = (req, res) => {
+exports.refreshToken = async (req, res) => {
   refreshTokenMiddleware(req, res, () => {
     console.log("ok")
   })

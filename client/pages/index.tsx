@@ -12,7 +12,9 @@ import { GetServerSideProps } from 'next'
 import axios from '../api/axios';
 import GymCard from '../components/public/GymCard';
 import {GymData} from '../types/type'
-
+import { useRouter } from 'next/router';
+import { useDispatch } from "react-redux";
+import {setUserInfo, ActionSetUserInfo} from '../redux/UserInfo'
 interface Props {
     recent_gyms : Array<GymData>
 }
@@ -24,6 +26,9 @@ interface ActiveGym {
 
 const Home : NextPage<Props> = ({recent_gyms}) => {
     // 드래그 관련 state
+    const dispatch = useDispatch();
+    const SetUserInfo = ({user_id, user_nickname, rule, access_token, refresh_token_key} :ActionSetUserInfo) => dispatch(setUserInfo({user_id, user_nickname, rule, access_token, refresh_token_key}));
+    
     const [isDrag, setIsDrag] = useState(false);
     const [startX, setStartX] = useState(0);
     const [movedX, setMovedX] = useState(0);
@@ -94,6 +99,24 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
             }
         }
     }, [isDrag, movedX])
+
+    useEffect(()=> {
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`).then(res=> {
+            // 로그인 처리
+            if (res.data.callback === 200) {
+                const {accessToken, refreshTokenKey} = res.data.token;
+                const {id, nickname, rule} = res.data.user
+                axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+                SetUserInfo({
+                    user_id : id,
+                    user_nickname : nickname,
+                    rule,
+                    access_token : accessToken,
+                    refresh_token_key : refreshTokenKey
+                })
+            }
+        })
+    },[])
     return (
         <>
             <Head>

@@ -28,7 +28,6 @@ export const GlobalStyle = createGlobalStyle`
     overflow: hidden;
     overscroll-behavior-y: none;
     font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
-    font-size: 40px;
     }
 
     .flex {
