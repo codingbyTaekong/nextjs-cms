@@ -5,6 +5,7 @@ const dayjs = require("dayjs");
 const { accessTokenMiddleware, refreshTokenMiddleware } = require("../../../middleware/auth");
 const conn = db_config.init();
 
+
 exports.login = async (req, res) => {
   if (req.body.id && req.body.password) {
 
@@ -26,6 +27,7 @@ exports.login = async (req, res) => {
         const hashedTokenKey = bcrypt.hashSync(`${id + password}_bigchoi`, salt);
         const nickname = rows[0].user_nickname;
         const rule = rows[0].rule;
+        const refreshToken = rows[0].token;
         // 암호화된 비밀번호
         const encodedPassword = rows[0].user_pwd;
         // console.log(encodedPassword)
@@ -37,24 +39,24 @@ exports.login = async (req, res) => {
               { id, nickname, rule },
               process.env.JWT_SECRET,
               {
-                expiresIn: "15m",
+                expiresIn: "1d",
                 issuer: "bigchoi",
               }
             );
-            jwt.verify(rows[0].token, process.env.JWT_SECRET, async (err, decoded) => {
+            jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
               if(err) {
                 // 리프레쉬 토큰이 만료되었다면 업데이트 로직
-                const refreshToken = jwt.sign(
+                const new_refreshToken = jwt.sign(
                   { id },
                   process.env.JWT_SECRET,
                   {
-                    expiresIn: "14h",
+                    expiresIn: "30d",
                     issuer: "bigchoi",
                   }
                   );
-                  const update_sql = `update user_table set updated_at='NOW()', token='${refreshToken}' where user_id='${id}'`
+                  const update_sql = `update user_table set updated_at=NOW(), token='${new_refreshToken}' where user_id='${id}'`
                   await conn.promise().query(update_sql);
-                  res.cookie('secureCookie', hashedTokenKey, {
+                  res.cookie('secureCookie', new_refreshToken, {
                     secure: true,
                     httpOnly: true,
                     expires: dayjs().add(30, "days").toDate()
@@ -68,14 +70,14 @@ exports.login = async (req, res) => {
                     },
                     token : {
                       accessToken,
-                      hashedTokenKey
+                      refreshToken
                     }
                   })
               }
               // 리프레쉬 토큰이 만료되지않았다면 로직
-              const update_sql = `update user_table set updated_at='NOW()' where user_id='${id}'`
+              const update_sql = `update user_table set updated_at=NOW() where user_id='${id}'`
               await conn.promise().query(update_sql);
-              res.cookie('secureCookie', hashedTokenKey, {
+              res.cookie('secureCookie', refreshToken, {
                 secure: true,
                 httpOnly: true,
                 expires: dayjs().add(30, "days").toDate()
@@ -89,7 +91,7 @@ exports.login = async (req, res) => {
                 },
                 token : {
                   accessToken,
-                  hashedTokenKey
+                  refreshToken
                 }
               })
             })
@@ -100,30 +102,33 @@ exports.login = async (req, res) => {
       }
     });
   } else {
-    refreshTokenMiddleware(req, res, (decoded) => {
-      console.log(decoded)
-      const {id, nickname, rule} = decoded
-      const accessToken = jwt.sign(
-        { id, nickname, rule },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "15m",
-          issuer: "bigchoi",
-        }
-      );
-      res.send({
-        callback : 200,
-        user : {
-          id,
-          nickname,
-          rule
-        },
-        token : {
-          accessToken,
-        }
-      })
-    })
+    res.status(403).send({callback : 403, context : "아이디 혹은 비밀번호가 없습니다."})
   }
+  //  else {
+    
+  //   refreshTokenMiddleware(req, res, (decoded) => {
+  //     const {id, nickname, rule} = decoded
+  //     const accessToken = jwt.sign(
+  //       { id, nickname, rule },
+  //       process.env.JWT_SECRET,
+  //       {
+  //         expiresIn: "15m",
+  //         issuer: "bigchoi",
+  //       }
+  //     );
+  //     res.send({
+  //       callback : 200,
+  //       user : {
+  //         id,
+  //         nickname,
+  //         rule
+  //       },
+  //       token : {
+  //         accessToken,
+  //       }
+  //     })
+  //   })
+  // }
 };
 
 exports.check_id = (req, res) => {
@@ -236,7 +241,37 @@ exports.register = async (req, res) => {
 
 
 exports.refreshToken = async (req, res) => {
-  refreshTokenMiddleware(req, res, () => {
-    console.log("ok")
+  refreshTokenMiddleware(req, res, async (decoded) => {
+    const user_id = decoded.id;
+    const select_sql = `select * from user_table where user_id = '${user_id}'`
+
+    const [user_row] = await conn.promise().query(select_sql);
+    const {user_nickname ,rule} = user_row[0];
+    const accessToken = jwt.sign(
+      { user_id, user_nickname, rule },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+        issuer: "bigchoi",
+      }
+    );
+
+    return res.status(200).send({
+      callback : 200,
+      user : {
+        id : user_id,
+        nickname : user_nickname,
+        rule: rule
+      },
+      token : accessToken
+    })
+  })
+}
+
+
+exports.verify_access_toekn = async (req, res) => {
+  accessTokenMiddleware(req, res, async (decoded)=> {
+    console.log(decoded);
+    res.send('ok')
   })
 }

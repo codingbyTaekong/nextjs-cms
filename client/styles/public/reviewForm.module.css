@@ -1,0 +1,212 @@
+.container {
+    width: 80%;
+    max-height: 938px;
+    max-width: 1024px;
+    height: 90%;
+    border-radius: 18px;
+    border : 1px solid rgba(0,0,0,0.1);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    background-color: #fff;
+    position: fixed;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+}
+.title {
+    font-family: var(--fn-jua);
+    font-size: 30px;
+}
+
+.sub_title {
+    font-size: 20px;
+    font-family: var(--fn-sans);
+    font-weight: 700;
+}
+
+.ratingContainer {
+    width: 100%;
+    /* height: 400px; */
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ratingContainer > p {
+    padding: 12px 0;
+    font-family: var(--fn-sans);
+    font-weight: 400;
+    font-size: 16px;
+}
+.ratingContainer > p > b {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.ratingContainer .rate {
+
+}
+
+.choiceWrapper {
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.choiceWrapper > p {
+    font-family: var(--fn-sans);
+    font-weight: 500;
+    font-size: 16px;
+    color: rgb(129, 129, 129);
+    padding-top: 8px;
+}
+.choiceContainer {
+    width: 90%;
+    max-width: 700px;
+    padding-top: 12px;
+}
+
+
+.choiceContainer ul {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    /* justify-content: space-between; */
+}
+.choiceContainer ul > li {
+    display: flex;
+}
+.choiceContainer ul > li label {
+    padding: 12px 12px;
+    border-radius: 6px;
+    margin: 6px 6px 6px 0;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.choiceContainer ul > li > input {
+    display: none;
+}
+
+.choiceContainer ul > li > input:checked ~ label {
+    background-color: #66d9e8;
+}
+
+.reviewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.photoReviewContainer {
+    width: 90%;
+    margin-top: 20px;
+    max-width: 700px;
+    /* display: flex; */
+    /* flex-direction: row-reverse; */
+}
+
+
+.textareaContainer {
+    width: 90%;
+    margin-top: 20px;
+    max-width: 700px;
+    padding-top: 12px;
+    border: 0;
+    height: 137px;
+    background-color: #f4f7f8;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: all cubic-bezier(0.3, 0.48, 0.44, 1) .3s;
+}
+.textareaContainer.active {
+    border: 1px solid #66d9e8;
+    background-color: #fff;
+}
+
+.textareaPlaceHolder {
+    padding: 20px 20px 40px;
+}
+.textareaPlaceHolder.active {
+    opacity: 0;
+}
+.textareaPlaceHolder > p {
+    line-height: 1.35;
+    color: #95989b;
+    font-size: 14px;
+}
+
+.textReview_count {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 12px;
+    font-family: var(--fn-sans);
+    font-weight: 500;
+}
+
+.textArea {
+    font-family: var(--fn-sans);
+    font-weight: 400;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 30px);
+    padding: 20px 20px 10px;
+    outline: none;
+    border: 0;
+    resize: none;
+    opacity: 0;
+    z-index: 1;
+    background-color: #f4f7f8;
+
+}
+
+.textArea.active {
+    opacity: 1;
+    background-color: #fff;
+}
+
+.buttonContainer {
+    width: 100%;
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+}
+
+.buttonContainer > .exit {
+    background-color: #f8fcfc;
+    border: 0.5px solid rgba(0,0,0,0.1);
+    width: 120px;
+    height: 45px;
+    border-radius: 4px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.buttonContainer > .exit:hover {
+    background-color: #d8dada;
+}
+
+.buttonContainer > .submit {
+    width: 120px;
+    height: 45px;
+    border-radius: 4px;
+    background-color: #1098ad;
+    color : #fff;
+    border: 0.5px solid rgba(0,0,0,0.1);
+    border: 0;
+    cursor: pointer;
+}
+.buttonContainer > .submit:hover {
+    background-color: #0b7285;
+}

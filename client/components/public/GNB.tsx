@@ -3,7 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import styles from '../../styles/public/gnb.module.css'
 import {StoreState} from '../../redux'
-function GNB() {
+import Image from 'next/image';
+import test from "../../assets/profile/im.jpeg";
+import styled from 'styled-components';
+
+interface Props {
+  // onClickNewReviewHandler : ()=> void
+  visibleNewReviewButton ?: boolean
+}
+
+
+function GNB({visibleNewReviewButton} : Props) {
   const {user_id, user_nickname, access_token} = useSelector((state : StoreState) => ({
     user_id : state.UserInfo.user_id,
     user_nickname : state.UserInfo.user_nickname,
@@ -29,9 +39,30 @@ function GNB() {
                   </Link>
                 </h1>
             </li>
-              <li className={styles.loginButton}>
-                {logined ? <span>로그아웃</span> :<Link title='로그인' href="/signin">로그인</Link>}
-              </li>
+            
+            {!logined  && 
+            <li className={styles.loginButton}>
+              <Link title='로그인' href="/signin">로그인</Link>
+            </li>
+            }
+            {
+              logined && 
+              <>
+                {/* {visibleNewReviewButton !== false && <NewReviewButton> */}
+                {<NewReviewButton>
+                  <button >
+                    <Link href="/new-review">
+                      리뷰 작성
+                    </Link>
+                  </button>
+                </NewReviewButton>}
+                <li>
+                  <ProfileImg >
+                    <Image src={test} objectFit="cover" />
+                  </ProfileImg>
+                </li>
+              </>
+            }
         </ul>
       </nav>
     </header>
@@ -39,3 +70,21 @@ function GNB() {
 }
 
 export default GNB;
+
+const ProfileImg = styled.span`
+  width: 45px;
+  height: 45px;
+  overflow: hidden;
+  border-radius: 50%;
+`
+
+const NewReviewButton = styled.li`
+  margin-left: auto;
+  & > button {
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: unset;
+  }
+`

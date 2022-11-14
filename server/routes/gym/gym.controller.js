@@ -31,7 +31,7 @@ exports.recentReviewGyms = async (req, res) => {
   try {
     
     const [recents_reviews_rows] = await conn.promise().query(select_sql);
-    console.log(recents_reviews_rows);
+    // console.log(recents_reviews_rows);
     let select_gym_sql = `
       select * from gym_table
     `
@@ -50,8 +50,8 @@ exports.recentReviewGyms = async (req, res) => {
         selcet_review_sql += ` or gym_id = ${obj.gym_id}`
       }
     })
-    console.log(selcet_review_sql);
-    console.log(select_gym_sql);
+    // console.log(selcet_review_sql);
+    // console.log(select_gym_sql);
     const [gym_rows] = await conn.promise().query(select_gym_sql);
     const [review_rows] = await conn.promise().query(selcet_review_sql);
     // console.log(gym_rows);

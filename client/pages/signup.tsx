@@ -34,7 +34,7 @@ const Container = styled.div`
 const Signup: NextPage = () => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const SetUserInfo = ({user_id, user_nickname, rule, access_token, refresh_token_key} :ActionSetUserInfo) => dispatch(setUserInfo({user_id, user_nickname, rule, access_token, refresh_token_key}));
+    const SetUserInfo = ({user_id, user_nickname, rule, access_token} :ActionSetUserInfo) => dispatch(setUserInfo({user_id, user_nickname, rule, access_token}));
     const onFinish = (values: any) => {
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
             id: values.id,
@@ -43,14 +43,13 @@ const Signup: NextPage = () => {
         }).then(res => {
             if (res.data.callback === 200) {
                 const {id, nickname} = res.data.user;
-                const { accessToken, refreshTokenKey } = res.data.token;
+                const { accessToken, refreshToken } = res.data.token;
                 axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
                 SetUserInfo({
                     user_id : id,
                     user_nickname : nickname,
                     rule : 1,
                     access_token : accessToken,
-                    refresh_token_key : refreshTokenKey
                 })
                 router.push('/')
             }

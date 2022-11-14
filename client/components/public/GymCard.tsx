@@ -61,7 +61,6 @@ const GymCard = ({gym, onRemove} : Props) => {
         }
         getData();
     }, [])
-    console.log(reviews);
     return <>
         <Container>
             <RemovePopup onClick={onRemove}>
@@ -79,6 +78,9 @@ const GymCard = ({gym, onRemove} : Props) => {
                     {gymInfo.length !== 0 && gymInfo.map((info, i) => {
                         return <li key={i}>{info}</li>
                     })}
+                    {gymInfo.length === 0 &&
+                        <li>등록된 정보가 없습니다</li>
+                    }
                 </ul>
             </FacilityContainer>
             <ReviewContainer>
@@ -150,14 +152,14 @@ export default GymCard;
  * @param gym_longitude 
  */
 const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
-    const mapScript = document.createElement("script");
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
-    document.head.appendChild(mapScript);
+    // const mapScript = document.createElement("script");
+    // mapScript.async = true;
+    // mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
+    // document.head.appendChild(mapScript);
     const latitude = Number(gym_latitude);
     const longitude = Number(gym_longitude);
-    const onLoadKakaoMap = () => {
-        window.kakao.maps.load(() => {
+    // const onLoadKakaoMap = () => {
+    //     window.kakao.maps.load(() => {
             const markerImg = new window.kakao.maps.MarkerImage("https://t1.daumcdn.net/mapjsapi/images/2x/marker.png", new window.kakao.maps.Size(29, 42))
             const marker = {
                 position : new window.kakao.maps.LatLng(latitude, longitude),
@@ -171,13 +173,14 @@ const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
                 marker
             }
             const map = new window.kakao.maps.StaticMap(container, options)
-        })
-    }
-    mapScript.addEventListener("load", onLoadKakaoMap);
+        // })
+    // }
+    // mapScript.addEventListener("load", onLoadKakaoMap);
 }
 
 const Container = styled.div`
     width: 80%;
+    max-height: 938px;
     max-width: 1024px;
     height: 90%;
     border-radius: 18px;
@@ -380,5 +383,8 @@ const TextReview = styled.div`
         white-space: nowrap;
         width: 100%;
         overflow: hidden;
+    }
+    & div.review_info .ant-rate {
+        font-size : 14px;
     }
 `

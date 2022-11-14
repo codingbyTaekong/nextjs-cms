@@ -38,8 +38,8 @@ module.exports = withBundleAnalyzer({
   // async rewrites() {
   //   return [
   //     {
-  //         source: '/api/:path*',
-  //         destination: 'http://localhost:3001/api/:path*',
+  //         source: '/api/jandi',
+  //         destination: 'https://wh.jandi.com/connect-api/webhook/14743284/6a3d9a2d676faaa6afb9650edbcdd6e5',
   //     },
   //   ]
   // },
