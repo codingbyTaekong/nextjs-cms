@@ -26,6 +26,7 @@ interface ActiveGym {
 }
 
 const Home : NextPage<Props> = ({recent_gyms}) => {
+    console.log(recent_gyms)
     // 드래그 관련 state
     const dispatch = useDispatch();
     const SetUserInfo = ({user_id, user_nickname, rule, access_token} :ActionSetUserInfo) => dispatch(setUserInfo({user_id, user_nickname, rule, access_token}));

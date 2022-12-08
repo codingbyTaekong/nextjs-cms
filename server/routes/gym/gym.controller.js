@@ -1,12 +1,18 @@
 const db_config = require("../../db_config");
 const conn = db_config.init();
+const {upload} = require('../../middleware/multer')
 exports.getGymData = (req, res) => {
-    const {query: { id } } = req;
+    const {query: { id, name } } = req;
     let select_sql = `
       select * from gym_table
     `
     if (id) {
       select_sql += ` where idx=${id}`
+    }
+    console.log(name)
+    if (name) {
+      console.log(name)
+      select_sql += ` where gym_name like '%${name}%'`
     }
     conn.query(select_sql, async (err, rows) => {
         if (err) {
@@ -16,7 +22,7 @@ exports.getGymData = (req, res) => {
         if (rows.length !== 0) {
           return res.send({ callback: 200, context: rows});
         } else {
-          return res.send({ callback: 403, context: "존재하지 않는 투어입니다." });
+          return res.status(403).send({ callback: 403, context: "존재하지 않는 투어입니다." });
         }
     })
 }
@@ -40,13 +46,13 @@ exports.recentReviewGyms = async (req, res) => {
     `
     recents_reviews_rows.map((obj,index) => {
       if (index === 0) {
-        select_gym_sql += `where idx = ${obj.gym_id}`
+        select_gym_sql += `where place_id = ${obj.gym_id}`
         selcet_review_sql += `where gym_id = ${obj.gym_id}`
       } else if (index === recents_reviews_rows.length -1) {
-        select_gym_sql += ` or idx = ${obj.gym_id}`
+        select_gym_sql += ` or place_id = ${obj.gym_id}`
         selcet_review_sql += ` or gym_id = ${obj.gym_id} order by created_at DESC`
       } else {
-        select_gym_sql += ` or idx = ${obj.gym_id}`
+        select_gym_sql += ` or place_id = ${obj.gym_id}`
         selcet_review_sql += ` or gym_id = ${obj.gym_id}`
       }
     })
@@ -63,7 +69,7 @@ exports.recentReviewGyms = async (req, res) => {
     review_rows.map((review, index) => {
       const gym_id = review.gym_id;
       gym_rows.map(gym => {
-        if (gym.idx === gym_id) {
+        if (gym.place_id === gym_id) {
           if (!gym.reviews) {
             gym.reviews = [review]
           } else {
@@ -126,6 +132,17 @@ exports.getGymTextReviews = async (req, res) => {
   } catch (error) {
     res.status(500).send({callback : 500, context : error })
   }
+}
+
+exports.postGymReview = async (req, res) => {
+  const {text_review, rate, keyword, id, gym_id} = req.body
+  const review_type = req.files && req.files.length > 0 ? 'img' : 'text'
+  const review_imgs = req.files ? req.files.map(file => `http://${req.headers.host}/public/uploads/${file.filename}`).join(', ') : null
+  const insert_sql = `INSERT INTO review_table (gym_id, review_type, review_rate, review_text, review_writer, review_select, review_imgs) VALUES ('${gym_id}', '${review_type}', '${rate}', '${text_review}', '${id}', '${keyword.join(', ')}', '${review_imgs}')`
+
+  const [result] = await conn.promise().query(insert_sql);
+  console.log(result)
+  res.status(200).send({callback : 200, insert_id : result.insertId});
 }
 /**
  * 

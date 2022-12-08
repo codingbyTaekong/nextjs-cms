@@ -14,6 +14,8 @@ import { faSearch } from '@fortawesome/pro-regular-svg-icons';
 import { faCheck, faXmark } from '@fortawesome/pro-solid-svg-icons';
 import ReviewForm from '../components/public/ReviewForm';
 import { KakaoMapData } from '../types/type';
+import axios from '../api/axios';
+import Alert from '../components/alert/Alert';
 declare global {
     interface window {
         kakao: any;
@@ -21,6 +23,12 @@ declare global {
     }
 }
 // http://place.map.kakao.com/
+
+interface alertProps {
+    text : string
+    type : "error" | "warning" | "success" | null
+    actived : boolean
+}
 
 const NewReview: NextPage = () => {
     // 카카오 지도 검색 관련
@@ -43,6 +51,22 @@ const NewReview: NextPage = () => {
         access_token: state.UserInfo.access_token
     }
     ))
+
+    // 얼럿 창 관리
+    const [alertStat, setAlertStat] = useState<alertProps>({
+        actived : false,
+        text : '',
+        type : null
+    })
+
+
+    const resetAlertHandler = () => {
+        setAlertStat({
+          actived : false,
+          text : '',
+          type : null
+        })
+    }
 
     /** 최초 진입 생애주기 */
     useEffect(() => {
@@ -107,28 +131,49 @@ const NewReview: NextPage = () => {
                 setMarkers([]);
             }
             if (searchedValue !== '') {
-                ps.current.keywordSearch(searchedValue, (data: KakaoMapData[], status: "ZERO_RESULT" | "OK") => {
-                    if (data.length !== 0 && status === "OK") {
-
-                        const gyms = data.filter(obj => obj.category_name.indexOf('스포츠') !== -1 ? true : false);
-                        if (gyms.length !== 0) {
-                            const markers = [];
-                            const bounds = new window.kakao.maps.LatLngBounds();
-
-                            for (let i = 0; i < gyms.length; i++) {
-                                const marker = displayMarker(gyms[i]);
-                                markers.push(marker)
-                                bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
-                            }
-
-                            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-                            kakaoMap.current.setBounds(bounds);
-                            setSearchResult(gyms)
-                            setMarkers(markers)
-                            setSearchedValue('');
-                            setActiveSearch(false);
-                        }
+                console.log(searchedValue)
+                axios.get(`${process.env.NEXT_PUBLIC_API_URL}/gym/get_gym`, {
+                    params : {
+                        name : searchedValue
                     }
+                }).then(res => {
+                    if (res.data.context.length > 0) {
+                        ps.current.keywordSearch(searchedValue, (data: KakaoMapData[], status: "ZERO_RESULT" | "OK") => {
+                            if (data.length !== 0 && status === "OK") {
+        
+                                const gyms = data.filter(obj => obj.category_name.indexOf('스포츠') !== -1 ? true : false);
+                                if (gyms.length !== 0) {
+                                    const markers = [];
+                                    const bounds = new window.kakao.maps.LatLngBounds();
+        
+                                    for (let i = 0; i < gyms.length; i++) {
+                                        const marker = displayMarker(gyms[i]);
+                                        markers.push(marker)
+                                        bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
+                                    }
+        
+                                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                                    kakaoMap.current.setBounds(bounds);
+                                    setSearchResult(gyms)
+                                    setMarkers(markers)
+                                    setSearchedValue('');
+                                    setActiveSearch(false);
+                                }
+                            }
+                        })
+                    } else {
+                        window.alert("데이터 없음")
+                    }
+                }).catch(err => {
+                    if (err.response.status === 403) {
+                        window.alert("데이터 없음")
+                    } else {
+                        window.alert("관리자에게 문의")
+                    }
+                    setSearchedValue('');
+                    setActiveSearch(false);
+                    setMarkers([])
+                    setSearchResult([])
                 })
             }
         }
@@ -252,7 +297,8 @@ const NewReview: NextPage = () => {
                     </Confirm>}
                 </MapGrid>
             </Container>
-            {isActiveReviewForm && <ReviewForm data={clickedGym}  onRemove={onRemoveFormHandler}/>}
+            {isActiveReviewForm && <ReviewForm data={clickedGym}  onRemove={onRemoveFormHandler} alertAction={setAlertStat}/>}
+            {alertStat.actived && <Alert text={alertStat.text} type={alertStat.type} handler={resetAlertHandler} />}
         </>
     );
 }

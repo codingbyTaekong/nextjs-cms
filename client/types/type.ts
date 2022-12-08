@@ -1,6 +1,7 @@
 
 export interface GymData {
     idx : number
+    place_id : number
     gym_name : string
     gym_type : string
     gym_address : string
@@ -16,6 +17,9 @@ export interface GymData {
 export interface Review {
     idx: number
     gym_id: number
+    review_type : "img" | "text"
+    review_select : string
+    review_imgs : string
     review_rate: number
     review_text: string
     review_writer: string

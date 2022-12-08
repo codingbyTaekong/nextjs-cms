@@ -11,11 +11,21 @@ import { Modal, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import Confirm from '../confirm/Confirm';
+import { useSelector } from 'react-redux';
+import {StoreState} from '../../redux'
+import Alert from '../alert/Alert';
 
+interface alertProps {
+  text : string
+  type : "error" | "warning" | "success" | null
+  actived : boolean,
+  
+}
 
 interface Props {
   data: KakaoMapData | null
   onRemove : () => void
+  alertAction : (value : React.SetStateAction<alertProps>) => void
 }
 const {TextArea} = Input
 
@@ -37,13 +47,15 @@ const UploadButton = () => {
   )
 }
 
-function ReviewForm({ data, onRemove }: Props) {
+function ReviewForm({ data, onRemove , alertAction}: Props) {
   const containerRef = useRef<HTMLTextAreaElement>(null);
-
+  const {user_id} = useSelector((state : StoreState) => ({
+    user_id : state.UserInfo.user_id
+  }))
   // 별점 상태
   const [rateValue, setRateValue] = useState(0);
   // 키워드 선택 상태
-  const [keyword, setKeyword] = useState<Array<String>>([]);
+  const [keyword, setKeyword] = useState<Array<string>>([]);
   // 텍스트 리뷰 엑시트 상태
   const [activeTextArea, setActiveTextArea] = useState(false);
   // 이미지 리스트
@@ -53,6 +65,14 @@ function ReviewForm({ data, onRemove }: Props) {
 
   // 컨펌 상태
   const [activeConfirm, setActiveConfirm] = useState(false);
+  const [imgList , setImgList] = useState<Array<Blob>>([])
+
+  // 업로드 이미지 미리보기 관련 상태
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+
+
 
   /**
    * 키워드 토글 핸들러
@@ -79,27 +99,96 @@ function ReviewForm({ data, onRemove }: Props) {
 
   // const handleCancel = () => setPreviewOpen(false);
 
+  
+  // const handlePreview = async (file: UploadFile) => {
+  //   if (!file.url && !file.preview) {
+  //     file.preview = await getBase64(file.originFileObj as RcFile);
+  //   }
+  // };
+
+  /** 이미지 업로드 인풋 체인지 핸들러 */
+  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList, file }) => {
+    setFileList(newFileList);
+    // setImgList(prev => prev.concat(file))
+  }
+
+  const handleCancel = () => setPreviewOpen(false);
   /** 미리 보기 이미지 핸들러 */
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  /** 이미지 업로드 인풋 체인지 핸들러 */
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  }
+  // const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => setFileList(newFileList);
 
   /**
    * 리뷰 저장 핸들러
    */
   const onSubmitReview = () => {
-    console.log(data)
-    console.log(fileList);
-    console.log(textReview);
-    console.log(rateValue);
-    console.log(keyword)
+    console.log(data?.id)
+    if (!user_id) {
+      return alertAction({
+        actived : true,
+        text : '세션정보가 만료되었습니다.',
+        type : 'error'
+      })
+    }
+    if (!data || !data.id) {
+      return alertAction({
+        actived : true,
+        text : '세션정보가 만료되었습니다.',
+        type : 'error'
+      })
+    }
+    if (textReview.length < 30) {
+      return alertAction({
+        actived : true,
+        text : '최소 30자 이상 작성해주세요🥺',
+        type : 'warning'
+      })
+    }
+
+    if (rateValue === 0) {
+      return alertAction({
+        actived : true,
+        text : '별점 평가는 필수항목입니다🥺',
+        type : 'warning'
+      })
+    }
+
+    if (keyword.length === 0) {
+      return alertAction({
+        actived : true,
+        text : '좋았던 점 하나이상 선택해주세요!🥺',
+        type : 'warning'
+      })
+    }
+
+    const form = new FormData();
+    imgList.map((file,index) => form.append(`img`, file));
+    form.append('gym_id', data!.id);
+    form.append('id', user_id);
+    form.append('text_review', textReview);
+    form.append('rate', String(rateValue));
+    keyword.map(el => form.append('keyword', el))
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}/gym/post_review`, form).then(res => {
+      if (res.status === 200 && res.data.callback === 200) {
+        onRemove()
+        alertAction({
+          actived : true,
+          text : '소중한 리뷰가 등록되었습니다😍',
+          type : 'success'
+        })
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+    // form.append('img_1', imgList[0]);
   }
 
   return (
@@ -157,14 +246,15 @@ function ReviewForm({ data, onRemove }: Props) {
         <h2 className={styles.sub_title}>리뷰</h2>
         <div className={styles.photoReviewContainer}>
           <Upload
-            action="http://localhost:3001/post/img"
-            name='files'
+            // action="http://localhost:3001/post/img"
+            name='img'
             listType="picture-card"
             fileList={fileList}
             onPreview={handlePreview}
             maxCount={5}
             onChange={handleChange}
             beforeUpload={(file) => {
+              setImgList(prev => prev.concat(file))
               // setFileList(fileList.concat(file))
               return false
             }}
