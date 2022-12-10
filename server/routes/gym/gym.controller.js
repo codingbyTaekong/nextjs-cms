@@ -37,7 +37,10 @@ exports.recentReviewGyms = async (req, res) => {
   try {
     
     const [recents_reviews_rows] = await conn.promise().query(select_sql);
-    // console.log(recents_reviews_rows);
+
+    if (recents_reviews_rows.length === 0) {
+      return res.send({callback : 202, context : [] })
+    }
     let select_gym_sql = `
       select * from gym_table
     `
@@ -137,7 +140,7 @@ exports.getGymTextReviews = async (req, res) => {
 exports.postGymReview = async (req, res) => {
   const {text_review, rate, keyword, id, gym_id} = req.body
   const review_type = req.files && req.files.length > 0 ? 'img' : 'text'
-  const review_imgs = req.files ? req.files.map(file => `http://${req.headers.host}/public/uploads/${file.filename}`).join(', ') : null
+  const review_imgs = req.files ? req.files.map(file => `http://${req.headers.host}/uploads/${file.filename}`).join(', ') : null
   const insert_sql = `INSERT INTO review_table (gym_id, review_type, review_rate, review_text, review_writer, review_select, review_imgs) VALUES ('${gym_id}', '${review_type}', '${rate}', '${text_review}', '${id}', '${keyword.join(', ')}', '${review_imgs}')`
 
   const [result] = await conn.promise().query(insert_sql);

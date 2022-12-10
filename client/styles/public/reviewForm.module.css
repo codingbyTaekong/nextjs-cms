@@ -168,7 +168,7 @@
     opacity: 0;
     z-index: 1;
     background-color: #f4f7f8;
-
+    line-height: 1.35;
 }
 
 .textArea.active {

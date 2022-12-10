@@ -4,9 +4,13 @@ import { useEffect,useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import axios from '../../api/axios';
 import {GymData, Review as _Review} from '../../types/type'
-import { Image, Rate } from 'antd'
+import {  Rate } from 'antd'
 import styles from "../../styles/public/gymcard.module.css";
-
+import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+import { LeftArrow, RightArrow } from '../ScrollMenu/Arrow';
+import usePreventBodyScroll from '../ScrollMenu/usePreventBodyScroll';
+import { faChevronDown } from '@fortawesome/pro-solid-svg-icons';
+import classnames from 'classnames';
 
 declare global {
     interface Window {
@@ -34,6 +38,7 @@ const GymCard = ({gym, onRemove} : Props) => {
     const max_offset = useRef(0);
     const [gymInfo, setGymInfo] = useState<Array<string>>([]);
     const ScrollContainerRef = useRef<HTMLDivElement>(null);
+    const { disableScroll, enableScroll } = usePreventBodyScroll();
     // const [reviews, setReviews] = useState<Array<Review>>([]);
     useEffect(()=> {
         LoadKakaoMap(gym.gym_latitude, gym.gym_longitude);
@@ -87,29 +92,36 @@ const GymCard = ({gym, onRemove} : Props) => {
                     </ul>
                 </FacilityContainer>
                 <ReviewWrapper>
-                    <ReviewTypeTitle>방문자리뷰({gym.reviews.length})</ReviewTypeTitle>
+                    <ReviewTypeTitle>방문자리뷰({gym.reviews ? gym.reviews.length : 0})</ReviewTypeTitle>
                     <ReviewContainer>
-                        {gym.reviews.map((review) => {
-                            return <Review key={review.idx}>
-                                <div className='review_info'>
-                                    <h1>{review.review_writer}</h1>
-                                    <div className='rate-container'>
-                                        <Rate disabled defaultValue={review.review_rate} />
+                        
+                            {gym.reviews && gym.reviews.map((review) => {
+                                return <Review key={review.idx}>
+                                    <div className='review_info'>
+                                        <h1>{review.review_writer}</h1>
+                                        <div className='rate-container'>
+                                            <Rate disabled defaultValue={review.review_rate} />
+                                        </div>
+                                        <p>{review.created_at.split('T')[0]}</p>
                                     </div>
-                                    <p>{review.created_at.split('T')[0]}</p>
-                                </div>
-                                <div className='img-container'>
-                                    <div className='img-slider'>
-                                        {review.review_imgs.split(', ').map((img, i, arr) => {
-                                            return (
-                                                <div className={arr.length === 1 ? 'img cover' :'img'}  style={{backgroundImage : `url(${img})`}}></div>
-                                            )
-                                        })}
+                                    <div className='img-container' onMouseEnter={disableScroll} onMouseLeave={enableScroll}>
+                                        <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
+                                            {review.review_imgs.split(', ').map((img, i, arr) => {
+                                                return (
+                                                    <div key={i} className='img'  style={{backgroundImage : `url(${img})`}}></div>
+                                                )
+                                            })}
+                                        </ScrollMenu>
                                     </div>
-                                </div>
-                                <p className='review-text'>{review.review_text}</p>
-                            </Review>
-                        } )}
+                                    <div className={styles.review_text_container} onClick={()=> setVisible(true)}>
+                                        <button className={styles.show_more_text}>
+                                            <FontAwesomeIcon icon={faChevronDown} />
+                                        </button>
+                                        <p className={classnames({[styles.review_text] : true, [styles.active] : visible ? true : false})}>{review.review_text}</p>
+                                    </div>
+                                </Review>
+                            } )}
+                        
                     </ReviewContainer>
                 </ReviewWrapper>
             </ScrollContainer>
@@ -125,20 +137,13 @@ export default GymCard;
  * @param gym_longitude 
  */
 const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
-    // const mapScript = document.createElement("script");
-    // mapScript.async = true;
-    // mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
-    // document.head.appendChild(mapScript);
     const latitude = Number(gym_latitude);
     const longitude = Number(gym_longitude);
-    // const onLoadKakaoMap = () => {
-    //     window.kakao.maps.load(() => {
             const markerImg = new window.kakao.maps.MarkerImage("https://t1.daumcdn.net/mapjsapi/images/2x/marker.png", new window.kakao.maps.Size(29, 42))
             const marker = {
                 position : new window.kakao.maps.LatLng(latitude, longitude),
                 image : markerImg
             }
-            // https://t1.daumcdn.net/mapjsapi/images/2x/marker.png
             const container = document.getElementById('map');
             const options = {
                 center : new window.kakao.maps.LatLng(latitude, longitude),
@@ -146,9 +151,7 @@ const LoadKakaoMap = (gym_latitude : string, gym_longitude : string) => {
                 marker
             }
             const map = new window.kakao.maps.StaticMap(container, options)
-        // })
-    // }
-    // mapScript.addEventListener("load", onLoadKakaoMap);
+
 }
 
 const Container = styled.div`
@@ -268,7 +271,7 @@ const FacilityContainer = styled.div`
 const ReviewWrapper = styled.div`
     padding-top: 12px;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: flex;
     flex-direction: column;
 `
@@ -283,9 +286,16 @@ const ReviewTypeTitle = styled.h2`
 
 const ReviewContainer = styled.div`
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     padding-top : 12px;
     /* overflow-y: auto; */
+    & .react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+        display: none;
+    }
+    & .react-horizontal-scrolling-menu--scroll-container {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
 `
 
 const Review = styled.div`
@@ -335,11 +345,11 @@ const Review = styled.div`
         /* width: 210px; */
         width: 100%;
         padding: 3% 0;
+        position: relative;
     }
-    & .img-slider {
-        touch-action: pan-y;
-    }
-    & .img-slider > .img {
+    & .img {
+        display: inline-block;
+        flex: 1;
         width: 210px;
         height: 168px;
         background-repeat: no-repeat;
@@ -348,7 +358,10 @@ const Review = styled.div`
         border-radius: 6px;
         box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
     }
-    & .img-slider > .img.cover {
-        width: 100%;
+    & .img:not(:last-of-type) {
+        margin-right: 10px;
+    }
+    & .react-horizontal-scrolling-menu--item:not(:last-of-type)  {
+        margin-right: 10px;
     }
 `

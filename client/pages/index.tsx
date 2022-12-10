@@ -26,7 +26,7 @@ interface ActiveGym {
 }
 
 const Home : NextPage<Props> = ({recent_gyms}) => {
-    console.log(recent_gyms)
+    // console.log(recent_gyms)
     // 드래그 관련 state
     const dispatch = useDispatch();
     const SetUserInfo = ({user_id, user_nickname, rule, access_token} :ActionSetUserInfo) => dispatch(setUserInfo({user_id, user_nickname, rule, access_token}));
@@ -98,6 +98,8 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
         if (isDrag) {
             // console.log("실제로 움직인 좌표", movedX);
             if (recentContainerRef.current) {
+                // console.log(movedX)
+                // recentContainerRef.current.style.transform = `translateX(${movedX}px)`
                 const sum = recentContainerRef.current.scrollLeft + movedX / 50 * -1
                 // console.log("계산한 결과 : ",sum)
                 recentContainerRef.current.scrollLeft = sum
@@ -156,30 +158,10 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                         onMouseDown={mouseDonwScrollHandler} 
                         onMouseMove={mouseMoveScrollHandler} 
                         onMouseUp={mouseUpScrollHandler}
-                        onMouseLeave={mouseUpScrollHandler}>
+                        onMouseLeave={mouseUpScrollHandler}
+                        >
 
                         {recent_gyms.map((gym, i) => {
-                            // console.log(new Date(gym.reviews[0].created_at))
-                            // const recent_date = new Date(gym.reviews[0].created_at).getTime();
-                            // const now = new Date().getTime();
-                            // console.log(now - recent_date);
-                            // const elapsedMSec = now - recent_date
-                            // // 초
-                            // const elapsedSec = elapsedMSec / 1000;
-                            // // 분
-                            // const elapsedMin = elapsedMSec / 1000 / 60;
-                            // // 시
-                            // const elapsedHour = elapsedMSec / 1000 / 60 / 60;
-                            // // 날짜
-                            // const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
-                            // console.log(
-                            //     `
-                            //         초 : ${elapsedSec}
-                            //         분 : ${elapsedMin}
-                            //         시 : ${elapsedHour}
-                            //         일 : ${elapsedDay}
-                            //     `
-                            // )
                             return (
                                 <li key={i} className={styles.recentCard} onClick={(e) => clickCardHandler(e, gym)}>
                                     <h1>{gym.gym_name}</h1>
@@ -187,7 +169,7 @@ const Home : NextPage<Props> = ({recent_gyms}) => {
                                     <div className={styles.reviewContainer}>
                                         <h2>최근 후기</h2>
                                         <ul>
-                                            {gym.reviews.map((review, j)=>{
+                                            {gym.reviews && gym.reviews.map((review, j)=>{
                                                 return <li key={j}>{review.review_text}</li>
                                             })}
                                         </ul>

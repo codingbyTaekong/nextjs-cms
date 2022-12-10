@@ -79,7 +79,7 @@
 .recentClimbGymList {
     display: flex;
     margin-top: 54px;
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
     padding-bottom: 12px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -87,6 +87,10 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-user-drag: none;
+    touch-action: pan-y;
+    -webkit-user-drag: none;
+    overflow: hidden;
 }
 .recentClimbGymList:hover::-webkit-scrollbar {
     opacity: 1;

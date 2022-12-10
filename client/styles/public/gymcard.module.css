@@ -9,3 +9,34 @@
 .preview:hover {
     transform: translate(-50%,-50%) scale(1.05);
 }
+
+.review_text_container {
+    width: 100%;
+    position: relative;
+}
+
+.review_text_container > .review_text {
+    width: 98%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.review_text_container > .review_text.active {
+    white-space: normal;
+    overflow: unset;
+    text-overflow: unset;
+    width: 100%;
+}
+.show_more_text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    border: 0;
+    background-color: unset;
+}
+
+.show_more_text.hidden {
+    display: none;
+}
